@@ -1,18 +1,21 @@
-# This is a basic workflow to help you get started with Actions
-# basic script to learn GitHuh actions.
-name: pipeline
+name: Pipeline
 
-# Controls when the action will run. 
 on: [push]
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+env:
+  APPLICATION_NAME: startupapp
 jobs:
-  myjob:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-    # Steps represent a sequence of tasks that will be executed as part of the job
+  lint:
+    runs-on: ubuntu-18.04
     steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v2
-    # Runs a single command using the runners shell
-    - name: Run a one-line script
-      run: echo Hello, World!!
+    - uses: actions/checkout@v1
+    - name: Setup Python environment
+      uses: actions/setup-python@v1.1.1
+    - name: Install requirements
+      run: pip install --quiet --requirement requirements.txt
+    - name: Lint code
+      run: |
+        flake8 --ignore=E501,E231 *.py
+        pylint --disable=C0301 --disable=C0326 test_app.py
+    - name: Run unit tests
+      run: |
+        python -m unittest --verbose --failfast
