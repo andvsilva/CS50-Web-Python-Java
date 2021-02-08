@@ -78,3 +78,4 @@ $ sass --watch variables.scss:variables.css
 
 - [Lecture - HTML and CSS](https://cs50.harvard.edu/web/2020/notes/0/#:~:text=HTML%20and%20CSS)
 - [HTML](https://www.w3schools.com/html/), [CSS](https://www.w3schools.com/css/)
+- [NOTES](https://cs50.harvard.edu/web/2020/notes/0/)
