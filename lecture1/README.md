@@ -1,4 +1,4 @@
-# Lecture 1 - Git - Version Control System (VCS)
+# [Lecture 1 - Git - Version Control System (VCS)](https://cs50.harvard.edu/web/2020/weeks/1/)
 
 ### What is Git ?
 

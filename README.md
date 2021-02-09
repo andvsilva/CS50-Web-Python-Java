@@ -7,7 +7,7 @@ In this course, we are picking up where CS50 left off and diving into the design
 - [HTML, CSS](https://cs50.harvard.edu/web/2020/weeks/0/)
 - [Git](https://cs50.harvard.edu/web/2020/weeks/1/)
 - [Python](https://cs50.harvard.edu/web/2020/weeks/2/)
-- Django
+- [Django](https://cs50.harvard.edu/web/2020/weeks/3/)
 - SQL, Models, and Migrations
 - JavaScript
 - User Interfaces
@@ -21,3 +21,5 @@ In this course the topics will be described in more detail in each folder lectur
 - [Lecture 1](lecture1/) - [Git](https://git-scm.com/doc): used for version control and collaboration
   
 - [Lecture 2](lecture2/) - [Python Tutorial](https://docs.python.org/3/tutorial/): a widely-used programming language we will use to make our sites more dynamic
+
+- [Lecture 3](lecture3/) - a popular web framework we will use for the backend of our sites 

@@ -1,0 +1,112 @@
+# [Lecture 3 - Django](https://cs50.harvard.edu/web/2020/weeks/3/)
+
+[Django](https://docs.djangoproject.com/en/3.1/) is a Python-based web framework that will allow us to write Python code that dynamically generates HTML and CSS. The advantage to using a framework like Django is that a lot of code is already written for us that we can take advantage of.
+
+## To install: Django
+
+```bash
+$ pip install django
+
+$ python -m django --version                                                85ms 
+3.1.6
+
+$ django-admin                                                               2ms 
+
+Type 'django-admin help <subcommand>' for help on a specific subcommand.
+
+Available subcommands:
+
+[django]
+    check
+    compilemessages
+    createcachetable
+    dbshell
+    diffsettings
+    dumpdata
+    flush
+    inspectdb
+    loaddata
+    makemessages
+    makemigrations
+    migrate
+    runserver
+    sendtestemail
+    shell
+    showmigrations
+    sqlflush
+    sqlmigrate
+    sqlsequencereset
+    squashmigrations
+    startapp
+    startproject
+    test
+    testserver
+Note that only Django core commands are listed as
+settings are not properly configured (error:Requested setting INSTALLED_APPS, but
+settings are not configured. You must either
+define the environment variable
+DJANGO_SETTINGS_MODULE or call settings.configure() before accessing settings.).
+```
+
+## HTTP
+```Bash
+HTTP, or HyperText Transfer Protocol,
+is a widely-accepted protocol for how
+messages are transfered back and forth
+across the internet. Typically
+information online is passed between a
+client (user) and a server. 
+
+```
+
+## To create a project in djnago
+
+```Bash
+$ django-admin startproject projectdjango
+$ python manage.py runserver                                                 2ms 
+Watching for file changes with StatReloader
+Performing system checks...
+
+System check identified no issues (0 silenced).
+
+You have 18 unapplied migration(s). Your project may not work properly until you apply the migrations for app(s): admin, auth, contenttypes, sessions.
+Run 'python manage.py migrate' to apply them.
+February 09, 2021 - 18:52:32
+Django version 3.1.6, using settings 'projectdjango.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CONTROL-C.
+
+```
+```Bash
+Open browser : http://127.0.0.1:8000/
+Quit the server with CONTROL-C
+
+$ python manage.py startapp hello
+
+/CS50-Web-Python-Java/lecture3/djg on  master! ⌚ 17:23:55
+$ python manage.py runserver                                             90167ms 
+Watching for file changes with StatReloader
+Performing system checks...
+
+System check identified no issues (0 silenced).
+
+You have 18 unapplied migration(s). Your project may not work properly until you apply the migrations for app(s): admin, auth, contenttypes, sessions.
+Run 'python manage.py migrate' to apply them.
+February 09, 2021 - 19:23:57
+
+http://127.0.0.1:8000/hello/andvsilva
+```
+
+```Bash
+status code   Description
+    200       OK
+    301       Moved Permanently
+    403       Forbidden
+    404       Not Found
+    500       Internal Server Error
+```
+
+## Useful references:
+
+
+

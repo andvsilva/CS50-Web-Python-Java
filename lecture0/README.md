@@ -1,4 +1,4 @@
-# Lecture 0 - HTML and CSS
+# [Lecture 0 - HTML and CSS](https://cs50.harvard.edu/web/2020/weeks/0/)
 
 To start, I will show a basic example to describe the structure of a webpage and explain the some details.
 
