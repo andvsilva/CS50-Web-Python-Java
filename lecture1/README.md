@@ -92,6 +92,10 @@ This is the basics commands to start to work with Git. For more information, ple
 
 - [Git Commands to Live By](https://medium.com/better-programming/git-commands-to-live-by-349ab1fe3139)
 
+### Data Version Control (DVC)
+- [Open-source Version Control System for Machine Learning Projects](https://dvc.org/)
+- [A Brief Introduction to Data Version Control (DVC)](https://connate.medium.com/a-brief-introduction-to-data-version-control-dvc-82ec5ee76c2b)
+
 ### SSH keys
 
 - [Generating a new SSH key and adding it to the ssh-agent](https://docs.github.com/en/github/authenticating-to-github/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)

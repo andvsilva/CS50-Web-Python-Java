@@ -1,6 +1,6 @@
 # [Lecture 3 - Django](https://cs50.harvard.edu/web/2020/weeks/3/)
 
-[Django](https://docs.djangoproject.com/en/3.1/) is a Python-based web framework that will allow us to write Python code that dynamically generates HTML and CSS. The advantage to using a framework like Django is that a lot of code is already written for us that we can take advantage of.
+[Django](https://docs.djangoproject.com/en/3.1/) is a Python-based web framework that will allow us to write Python code that dynamically generates HTML and CSS. The advantage to using a framework like Django is that a lot of code is already written for us that we can take advantage of. Django is a high-level Python web framework that is both free and open source.
 
 ## To install: Django
 
@@ -59,7 +59,7 @@ client (user) and a server.
 
 ```
 
-## To create a project in djnago
+## To create a project in django
 
 ```Bash
 $ django-admin startproject projectdjango
@@ -77,6 +77,7 @@ Starting development server at http://127.0.0.1:8000/
 Quit the server with CONTROL-C.
 
 ```
+
 ```Bash
 Open browser : http://127.0.0.1:8000/
 Quit the server with CONTROL-C
@@ -108,5 +109,7 @@ status code   Description
 
 ## Useful references:
 
+- [How to Create a Simple Django Web App With Python](https://medium.com/better-programming/how-to-create-a-simple-django-web-app-with-python-7ba75b4e34a6)
+- [A Crash Course in Django](https://medium.com/@arijbirnbaum/a-crash-course-in-django-f7a39629e7e0)
 
 
