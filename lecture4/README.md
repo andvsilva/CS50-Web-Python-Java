@@ -245,6 +245,17 @@ path("flights/", include("flights.urls")),
 
 1. Create a ```urls.py``` file within the ```flights``` application. And fill it with standard ```urls.py``` imports and lists.
 
+```Bash
+### flights/urls.py 
+from django.urls import path
+
+from . import views
+
+urlpatterns = [
+    
+]
+```
+
 Now, rather than creating actual paths and getting started on ```views.py```, we’ll create some models in the ```models.py``` file. In this file, we’ll outline what data we want to store in our application. Then, Django will determine the SQL syntax necessary to store information on each of our models. Let’s take a look at what a model for a single flight might look like:
 
 ```bash
@@ -252,7 +263,6 @@ class Flight(models.Model):
     origin = models.CharField(max_length=64)
     destination = models.CharField(max_length=64)
     duration = models.IntegerField()
-
 ```
 
 Let’s take a look at what’s going on in this model definition:
@@ -278,6 +288,7 @@ This command creates some Python files that will create or edit our database to 
 Next, to apply these migrations to our database, we run the command
 
 ```bash
+## terminal
 python manage.py migrate
 ```
 
@@ -371,6 +382,195 @@ Out[14]: 415
 ![](figures/shell_flight_properties.png)
 
 This is a good start, but thinking back to earlier, we don’t want to have to store the city name as an origin and destination for every flight, so we probably want another model for an airport that is somehow related to the flight model:
+
+```Bash
+class Airport(models.Model):
+    code = models.CharField(max_length=3)
+    city = models.CharField(max_length=64)
+
+    def __str__(self):
+        return f"{self.city} ({self.code})"
+
+class Flight(models.Model):
+    origin = models.ForeignKey(Airport, on_delete=models.CASCADE, related_name="departures")
+    destination = models.ForeignKey(Airport, on_delete=models.CASCADE, related_name="arrivals")
+    duration = models.IntegerField()
+
+    def __str__(self):
+        return f"{self.id}: {self.origin} to {self.destination}"
+```
+
+We’ve seen everything in our new ```Airport``` class before, but the changes to the ```origin``` and ```destination``` fields within the ```Flight``` class are new to us:
+
+- We specify that the ```origin``` and ```destination``` fields are each [Foreign Keys](https://docs.djangoproject.com/en/3.0/topics/db/examples/many_to_one/), which means they refer to another object.
+- By entering ```Airport``` as our first argument, we are specifying the type of object this field refers to.
+- The next argument, ```on_delete=models.CASCADE``` gives instructions for what should happen if an airport is deleted. In this case, we specify that when an airport is deleted, all flights associated with it should also be deleted. There are [several other options](https://docs.djangoproject.com/en/3.0/ref/models/fields/#django.db.models.ForeignKey.on_delete) in addition to CASCADE.
+- We provide a [related name](https://docs.djangoproject.com/en/3.0/ref/models/fields/#django.db.models.ForeignKey.related_name), which gives us a way to search for all flights with a given airport as their origin or destination.
+
+Every time we make changes in ```models.py```, we have to make migrations and then migrate. Note that you may have to delete your existing flight from New York to London, as it doesn’t fit in with the new database structure.
+
+### ERROR - an invalid foreign key
+
+- Python 3.7.9
+
+```bash
+~/repo/CS50-Web-Python-Java/lecture4/airline on  master! ⌚ 0:22:03
+$ python manage.py makemigrations                                               527260ms 
+Migrations for 'flights':
+  flights/migrations/0002_auto_20210219_0222.py
+    - Create model Airport
+    - Alter field destination on flight
+    - Alter field origin on flight
+(base) 
+~/repo/CS50-Web-Python-Java/lecture4/airline on  master! ⌚ 0:22:26
+$ python manage.py migrate                                                         534ms 
+Operations to perform:
+...
+django.db.utils.IntegrityError: The row in table 'flights_flight' with primary key '1' has an invalid foreign key: flights_flight.origin_id contains a value 'New York' that does not have a corresponding value in flights_airport.id.
+
+```
+
+### To solve - The Error
+
+Try to delete all the migration files exept __init__.py and
+also delete db.sqlite3. After that run makemigrations and
+migrate again - [here the solution](https://stackoverflow.com/a/58684324)
+
+- **NOTE**: Maybe in the python 3.8.1 or above this error does not happen.
+
+```bash
+$ python manage.py makemigrations
+Migrations for 'flights':
+  flights/migrations/0001_initial.py
+    - Create model Airport
+    - Create model Flight
+(base) 
+~/repo/CS50-Web-Python-Java/lecture4/airline
+$ python manage.py migrate                                                                                                                              487ms 
+Operations to perform:
+  Apply all migrations: admin, auth, contenttypes, flights, sessions
+Running migrations:
+  Applying contenttypes.0001_initial... OK
+  Applying auth.0001_initial... OK
+  Applying admin.0001_initial... OK
+  Applying admin.0002_logentry_remove_auto_add... OK
+  Applying admin.0003_logentry_add_action_flag_choices... OK
+  Applying contenttypes.0002_remove_content_type_name... OK
+  Applying auth.0002_alter_permission_name_max_length... OK
+  Applying auth.0003_alter_user_email_max_length... OK
+  Applying auth.0004_alter_user_username_opts... OK
+  Applying auth.0005_alter_user_last_login_null... OK
+  Applying auth.0006_require_contenttypes_0002... OK
+  Applying auth.0007_alter_validators_add_error_messages... OK
+  Applying auth.0008_alter_user_username_max_length... OK
+  Applying auth.0009_alter_user_last_name_max_length... OK
+  Applying auth.0010_alter_group_name_max_length... OK
+  Applying auth.0011_update_proxy_permissions... OK
+  Applying auth.0012_alter_user_first_name_max_length... OK
+  Applying flights.0001_initial... OK
+  Applying sessions.0001_initial... OK
+```
+
+Now, let’s try these new models out in the Django shell:
+
+```Bash
+$ python manage.py shell
+
+# Import all models
+In [1]: from flights.models import *
+
+# Create some new airports
+In [2]: jfk = Airport(code="JFK", city="New York")
+In [4]: lhr = Airport(code="LHR", city="London")
+In [6]: cdg = Airport(code="CDG", city="Paris")
+In [9]: nrt = Airport(code="NRT", city="Tokyo")
+
+# Save the airports to the database
+In [3]: jfk.save()
+In [5]: lhr.save()
+In [8]: cdg.save()
+In [10]: nrt.save()
+
+# Add a flight and save it to the database
+In [10]: f = Flight(origin=jfk, destination=lhr, duration=414)
+In [11]: f.save()
+
+# Display some info about the flight
+In [14]: f
+Out[14]: <Flight: 1: New York (JFK) to London (LHR)>
+In [15]: f.origin
+Out[15]: <Airport: New York (JFK)>
+
+# Using the related name to query by airport of arrival:
+In [17]: lhr.arrivals.all()
+Out[17]: <QuerySet [<Flight: 1: New York (JFK) to London (LHR)>]>
+
+In [15]: f.origin.city
+Out[15]: 'New York'
+
+In [16]: f.origin.code
+Out[16]: 'JFK'
+
+In [17]: lhr.arrivals.all()
+Out[17]: <QuerySet [<Flight: 1: New York (JFK) to London (LHR)>]>
+```
+
+### Starting our Application
+
+We can now begin to build an application around this process of using models to interact with a database. Let’s begin by creating an index route for our airline. Inside ```urls.py```:
+
+```bash
+~/repo/CS50-Web-Python-Java/lecture4/airline/flights
+
+urls.py:
+
+from django.urls import path
+
+from . import views
+
+urlpatterns = [
+    path('', views.index, name="index"),
+]%                                                                                                                                                             (base)
+```
+
+
+Inside ```views```:
+
+```bash
+from django.shortcuts import render
+from .models import Flight, Airport
+
+# Create your views here.
+
+def index(request):
+    return render(request, "flights/index.html", {
+        "flights": Flight.objects.all()
+    })
+```
+
+```bash
+## pwd - layout and index file html
+$ ~/repo/CS50-Web-Python-Java/lecture4/airline/flights/templates/flights
+```
+Inside our new ```layout.html``` file:
+
+```bash
+~/repo/CS50-Web-Python-Java/lecture4/airline 
+$ python manage.py runserver                                                                                                                          96228ms 
+Watching for file changes with StatReloader
+Performing system checks...
+
+System check identified no issues (0 silenced).
+February 19, 2021 - 03:24:04
+Django version 3.1.6, using settings 'airline.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CONTROL-C.
+[19/Feb/2021 03:24:06] "GET /flights/ HTTP/1.1" 200 384
+```
+
+![](/lecture4/figures/flights_html.png)
+
+Now, let’s add some more flights to our application by returning to the Django shell:
 
 ## Useful References
 
