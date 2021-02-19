@@ -556,7 +556,8 @@ Inside our new ```layout.html``` file:
 
 ```bash
 ~/repo/CS50-Web-Python-Java/lecture4/airline 
-$ python manage.py runserver                                                                                                                          96228ms 
+$ python manage.py runserver
+
 Watching for file changes with StatReloader
 Performing system checks...
 
@@ -570,7 +571,409 @@ Quit the server with CONTROL-C.
 
 ![](/lecture4/figures/flights_html.png)
 
-Now, let’s add some more flights to our application by returning to the Django shell:
+Now, let’s add some more flights to our application by returning to the **Django shell**:
+
+```Bash
+~/repo/CS50-Web-Python-Java/lecture4/airline
+$ python manage.py shell
+Python 3.7.9 (default, Aug 31 2020, 12:42:55) 
+Type 'copyright', 'credits' or 'license' for more information
+IPython 7.19.0 -- An enhanced Interactive Python. Type '?' for help.
+
+In [1]: from flights.models import *
+
+# Using the filter command to find all airports based in New York
+In [2]: Airport.objects.filter(city="New York")
+Out[2]: <QuerySet [<Airport: New York (JFK)>]>
+
+# Using the get command to get only one airport in New York
+In [3]: Airport.objects.get(city="New York")
+Out[3]: <Airport: New York (JFK)>
+
+# Assigning some airports to variable names:
+In [4]: jfk = Airport.objects.get(city="New York")
+
+In [5]: cdg = Airport.objects.get(city="Paris")
+
+# Creating and saving a new flight:
+In [6]: f = Flight(origin=jfk, destination=cdg, duration=435)
+
+In [7]: f.save()
+
+```
+
+```bash
+# terminal
+$ python manage.py runserver
+
+$ google-chrome http://127.0.0.1:8000/flights/
+```
+
+![](/lecture4/figures/flights_html_addmore.png)
+
+### Django Admin
+
+Since it is so common for developers to have to create new objects like we’ve been doing in the shell, Django comes with a [default admin interface](https://docs.djangoproject.com/en/3.0/ref/contrib/admin/) that allows us to do this more easily. To begin using this tool, we must first create an administrative user:
+
+```Bash
+~/repo/CS50-Web-Python-Java/lecture4/airline
+$ python manage.py createsuperuser
+Username (leave blank to use 'andsilva'): andvsilva
+Email address: myemail@gmail.com
+Password: 
+Password (again):
+Superuser created successfully.
+```
+
+Now, we must add our models to the admin application by entering the ```admin.py``` file within our app, and importing and registering our models. This tells Django which models we would like to have access to in the admin app.
+
+![](/lecture4/figures/login_admin.png)
+
+After loggin in, you’ll be brought to a page like the one below where you can create, edit, and delete objects stored in the database
+
+![](/lecture4/figures/logged_admin.png)
+
+
+### Add Airport
+
+![](/lecture4/figures/Add_airport.png)
+
+![](/lecture4/figures/history_Add.png)
+
+![](/lecture4/figures/All_airport.png)
+
+### Add Flight
+
+![](/lecture4/figures/Add_flight.png)
+
+Now, let’s add a few more pages to our site. We’ll begin by adding the ability to click on a flight to get more information about it. To do this, let’s create a URL path that includes the ```id``` of a flight:
+
+```Bash
+
+# ADD the path to urls.py
+path("<int:flight_id>", views.flight, name="flight")
+
+# FILE urls.py
+$ ~/repo/CS50-Web-Python-Java/lecture4/airline/flights/urls.py
+```
+
+Then, in ```views.py``` we will create a ```flight``` function that takes in a flight id and renders a new html page:
+
+```Bash
+# ADD function to the file views
+def flight(request, flight_id):
+    flight = Flight.objects.get(id=flight_id)
+    return render(request, "flights/flight.html", {
+        "flight": flight
+    })
+
+## FILE views.py 
+$ ~/repo/CS50-Web-Python-Java/lecture4/airline/flights/views.py
+```
+
+Now we’ll create a template to display this flight information with a link back to the home page
+
+```Bash
+# FILE flights.html at flights/templates/flights
+{% extends "flights/layout.html" %}
+
+{% block body %}
+    <h1>Flight {{ flight.id }}</h1>
+    <ul>
+        <li>Origin: {{ flight.origin }}</li>
+        <li>Destination: {{ flight.destination }}</li>
+        <li>Duration: {{ flight.duration }} minutes</li>
+    </ul>
+    <a href="{% url 'index' %}">All Flights</a>
+{% endblock %}
+```
+
+Finally, we need to add the ability to link from one page to another, so we’ll modify our index page to include links:
+
+```Bash
+{% extends "flights/layout.html" %}
+
+{% block body %}
+    <h1>Flights:</h1>
+    <ul>
+        {% for flight in flights %}
+            <li><a href="{% url 'flight' flight.id %}">Flight {{ flight.id }}</a>: {{ flight.origin }} to {{ flight.destination }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
+```
+
+### Many-to-Many Relationships
+
+Now, let’s work on integrating passengers into our models. We’ll create a passenger model to start:
+
+```Bash
+# FILE models.py at flights/
+class Passenger(models.Model):
+    first = models.CharField(max_length=64)
+    last = models.CharField(max_length=64)
+    flights = models.ManyToManyField(Flight, blank=True, related_name="passengers")
+
+    def __str__(self):
+        return f"{self.first} {self.last}"
+```
+
+- As we discussed, passengers have a **Many to Many** relationship with flights, which we describe in Django using the ManyToManyField.
+- The first argument in this field is the class of objects that this one is related to.
+- We have provided the argument ```blank=True``` which means a passenger can have no flights
+- We have added a ```related_name``` that serves the same purpose as it did earlier: it will allow us to find all passengers on a given flight.
+
+To actually make these changes, we must make migrations and migrate. We can then register the Passenger model in ```admin.py``` and visit the admin page to create some passengers!
+
+Now that we’ve added some passengers, let’s update our flight page so that it displays all passengers on a flight. We’ll first visit ```views.py``` and update our flight view to provide a list of passengers as context. We access the list using the related name we defined earlier.
+
+```Bash
+## terminal
+### makemigrations
+~/repo/CS50-Web-Python-Java/lecture4/airline
+$ python manage.py makemigrations
+Migrations for 'flights':
+  flights/migrations/0002_passenger.py
+    - Create model Passenger
+
+### migrate
+~/repo/CS50-Web-Python-Java/lecture4/airline
+$ python manage.py migrate
+Operations to perform:
+  Apply all migrations: admin, auth, contenttypes, flights, sessions
+Running migrations:
+  Applying flights.0002_passenger... OK
+(base)
+
+# RUN server
+$ python manage.py runserver
+```
+
+```Bash
+# ADD the function to views 
+def flight(request, flight_id):
+    flight = Flight.objects.get(id=flight_id)
+    passengers = flight.passengers.all()
+    return render(request, "flights/flight.html", {
+        "flight": flight,
+        "passengers": passengers
+    })
+```
+
+Now, add a list of passengers to ```flight.html```:
+
+```Bash
+<h2>Passengers:</h2>
+<ul>
+    {% for passenger in passengers %}
+        <li>{{ passenger }}</li>
+    {% empty %}
+        <li>No Passengers.</li>
+    {% endfor %}
+</ul>
+```
+
+### Add Passenger
+
+![](/lecture4/figures/Add_passenger.png)
+
+### Add Passenger to Flight
+
+![](/lecture4/figures/Add_passenger_toFlight.png)
+
+Now, let’s work on giving visitors to our site the ability to book a flight. We’ll do this by adding a booking route in ```urls.py```:
+
+```Bash
+### at flights/
+path("<int:flight_id>/book", views.book, name="book")
+```
+
+Now, we’ll add a **book function** to ```views.py``` that adds a passenger to a flight:
+
+```Bash
+def book(request, flight_id):
+
+    # For a post request, add a new flight
+    if request.method == "POST":
+
+        # Accessing the flight
+        flight = Flight.objects.get(pk=flight_id)
+
+        # Finding the passenger id from the submitted form data
+        passenger_id = int(request.POST["passenger"])
+
+        # Finding the passenger based on the id
+        passenger = Passenger.objects.get(pk=passenger_id)
+
+        # Add passenger to the flight
+        passenger.flights.add(flight)
+
+        # Redirect user to flight page
+        return HttpResponseRedirect(reverse("flight", args=(flight.id,)))
+
+```
+
+Next, we’ll add some context to our flight template so that the page has access to everyone who is not currently a passenger on the flight using Django’s ability to [exclude]() certain objects from a query:
+
+```Bash
+### ADD this function to the FILE views at flights/
+def flight(request, flight_id):
+    flight = Flight.objects.get(id=flight_id)
+    passengers = flight.passengers.all()
+    return render(request, "flights/flight.html", {
+        "flight": flight,
+        "passengers": passengers.all(),
+        "non_passengers": Passenger.objects.exclude(flights=flight).all()
+    })
+```
+
+### Book the passenger to the flight
+
+![](/lecture4/figures/Book_passenger_ToFlight.png)
+
+Another advantage of using the Django admin app is that it is customizable. For example, if we wish to see all aspects of a flight in the admin interface, we can create a new class within ```admin.py``` and add it as an argument when registering the ```Flight``` model:
+
+```Bash
+# ADD this class to the FILE admin.py
+class FlightAdmin(admin.ModelAdmin):
+    list_display = ("id", "origin", "destination", "duration")
+
+# Register your models here.
+admin.site.register(Flight, FlightAdmin)
+```
+
+Now, when we visit the admin page for flights, we can see the ```id``` as well
+
+
+![](/lecture4/figures/flights_origdestdur.png)
+
+Check out [Django’s admin documentation](https://docs.djangoproject.com/en/3.0/ref/contrib/admin/) to find more ways to customize the admin app.
+
+```Bash
+### FILE admin
+### FlightAdmin
+### PassengerAdmin
+
+from django.contrib import admin
+
+from .models import Flight, Airport, Passenger
+
+# Register your models here.
+class FlightAdmin(admin.ModelAdmin):
+    list_display = ("id", "origin", "destination", "duration")
+
+class PassengerAdmin(admin.ModelAdmin):
+    filter_horizontal = ("flights",)
+
+admin.site.register(Airport)
+# Register your models here.
+admin.site.register(Flight, FlightAdmin)
+admin.site.register(Passenger, PassengerAdmin)
+```
+![](/lecture4/figures/change_passenger_flight.png)
+### Users
+
+The last thing we’ll discuss in lecture today is the idea of authentication, or allowing users to log in and out of a website. Fortunately, Django makes this very easy for us, so let’s go through an example of how we would do this. We’ll start by creating a new app called ```users```. Here we’ll go through all the normal steps of creating a new app, but in our new ```urls.py``` file, we’ll add a few more routes:
+
+```Bash
+## terminal
+~/repo/CS50-Web-Python-Java/lecture4/airline
+$ python manage.py startapp users
+```
+
+```Bash
+## urls.py at users/
+from django.urls import path
+
+from . import views
+
+urlpatterns = [
+    path("", views.index, name="index"),
+    path("login", views.login_view, name="login"),
+    path("logout", views.logout_view, name="logout")
+]
+```
+
+Let’s begin by creating a form where a user can log in. We’ll create a ```layout.html``` file as always, and then create a ```login.html``` file which contains a form, and that displays a message if one exists.
+
+Now, in ```users/views.py```, we’ll add three functions:
+
+```Bash
+def index(request):
+    # If no user is signed in, return to login page:
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("login"))
+    return render(request, "users/user.html")
+
+def login_view(request):
+    return render(request, "users/login.html")
+
+def logout_view(request):
+    # Pass is a simple way to tell python to do nothing.
+    pass
+```
+
+```Bash
+## FILE users/login.html
+{% extends "users/layout.html" %}
+
+{% block body %}
+    {% if message %}
+        <div>{{ message }}</div>
+    {% endif %}
+
+    <form action="{% url 'login' %}" method="post">
+        {% csrf_token %}
+        <input type="text", name="username", placeholder="Username">
+        <input type="password", name="password", placeholder="Password">
+        <input type="submit", value="Login">
+    </form>
+{% endblock %}
+
+```
+
+Next, we can head to the admin site and add some users. After doing that, we’ll go back to ```views.py``` and update our ```login_view``` function to handle a ```POST``` request with a username and password:
+
+```Bash
+# Additional imports we'll need:
+from django.contrib.auth import authenticate, login, logout
+
+def login_view(request):
+    if request.method == "POST":
+        # Accessing username and password from form data
+        username = request.POST["username"]
+        password = request.POST["password"]
+
+        # Check if username and password are correct, returning User object if so
+        user = authenticate(request, username=username, password=password)
+
+        # If user object is returned, log in and route to index page:
+        if user:
+            login(request, user)
+            return HttpResponseRedirect(reverse("index"))
+        # Otherwise, return login page again with new context
+        else:
+            return render(request, "users/login.html", {
+                "message": "Invalid Credentials"
+            })
+    return render(request, "users/login.html")
+```
+
+Finally, to allow the user to log out, we’ll update the ```logout_view``` function so that it uses Django’s built-in ```logout``` function:
+
+```Bash
+def logout_view(request):
+    logout(request)
+    return render(request, "users/login.html", {
+                "message": "Logged Out"
+            })
+```
+
+Now that we’re finished, here’s a demonstration of the site
+
+![](/lecture4/figures/login_user.png)
+
+That’s all for this lecture! Next time, we’ll learn our second programming language of the course: JavaScript.
 
 ## Useful References
 
