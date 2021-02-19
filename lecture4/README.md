@@ -971,7 +971,7 @@ def logout_view(request):
 
 Now that we’re finished, here’s a demonstration of the site
 
-![](/lecture4/figures/login_user.png)
+![](/lecture4/figures/login_user.gif)
 
 That’s all for this lecture! Next time, we’ll learn our second programming language of the course: JavaScript.
 
