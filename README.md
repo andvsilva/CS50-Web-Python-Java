@@ -9,7 +9,7 @@ In this course, we are picking up where CS50 left off and diving into the design
 - [Python](https://cs50.harvard.edu/web/2020/weeks/2/)
 - [Django](https://cs50.harvard.edu/web/2020/weeks/3/)
 - [SQL, Models, and Migrations](https://cs50.harvard.edu/web/2020/weeks/4/)
-- JavaScript
+- [JavaScript](https://cs50.harvard.edu/web/2020/weeks/5/)
 - User Interfaces
 - Testing, CI/CD
 - Scalability and Security
@@ -22,5 +22,8 @@ In this course the topics will be described in more detail in each folder lectur
   
 - [Lecture 2](lecture2/) - [Python Tutorial](https://docs.python.org/3/tutorial/): a widely-used programming language we will use to make our sites more dynamic
 
-- [Lecture 3](lecture3/) - a popular web framework we will use for the backend of our sites 
-- [Lecture 4](lecture4/) - a language used for storing and retrieving data, and Django-specific methods that make it easier to interact with SQL databases  
+- [Lecture 3](lecture3/): a popular web framework we will use for the backend of our sites
+
+- [Lecture 4](lecture4/): a language used for storing and retrieving data, and Django-specific methods that make it easier to interact with SQL databases
+
+- [Lecture 5](lecture5): a programming language used to make websites faster and more interactive
