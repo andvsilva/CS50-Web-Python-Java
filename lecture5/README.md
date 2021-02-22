@@ -104,7 +104,7 @@ Having JavaScript in a separate file is useful for a number of reasons:
 
 Let’s get started on another example of a page that can be a bit more interactive. Below, we’ll create a page where a user can type in their name to get a custom greeting.
 
-![](greetings.gif)
+![](/html/greetings.gif)
 
 Some notes about the page above:
 
