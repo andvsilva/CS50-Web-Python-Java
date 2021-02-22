@@ -1,21 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>Count</title>
-        <script>
-            function hello() {
-                const header = document.querySelector('h1');
-                if (header.innerHTML === 'Hello!') {
-                    header.innerHTML = 'Goodbye!';
-                }
-                else {
-                    header.innerHTML = 'Hello!';
-                }
-            }
-        </script>
-    </head>
-    <body>
-        <h1>Hello!</h1>
-        <button onclick="hello()">Click Here</button>
-    </body>
+<head>
+    <title>Hello</title>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelector('form').onsubmit = function() {
+                const name = document.querySelector('#name').value;
+                alert(`Hello, ${name}`);
+            };
+        });
+    </script>
+</head>
+<body>
+    <form>
+        <input autofocus id="name" placeholder="Name" type="text">
+        <input type="submit">
+    </form>
+</body>
 </html>

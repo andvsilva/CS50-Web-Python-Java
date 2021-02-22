@@ -81,3 +81,37 @@ Let’s use this idea of DOM manipulation to improve our counter page: [counter 
 We can make this page even more interesting by displaying an alert every time the counter gets to a multiple of ten. In this alert, we’ll want to format a string to customize the message, which in JavaScript we can do using [template literals](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals). Template literals requre that there are backticks (``` ` ```) around the entire expression and a ```$``` and curly braces around any substitutions. For example, let’s change our count function [counter DOM](html/counter_dom.html)
 
 we’ve used an [anonymous function](https://www.w3schools.com/js/js_function_definition.asp), which is a function that is never given a name. Putting all of this together, our JavaScript now looks like this: [counter DOM](html/counter_dom.html)
+
+Another way that we can improve our design is by moving our JavaScript intoa separate. The way
+we do this is very similar to how we put our CSS in a separate file for stylingÇ
+
+1. Write all of your JavaScript code in a separate file ending in ```.js```, maybe ```index.js```.
+2. Add a ```src``` attribute to the ```<script>``` tag that points to this new file.
+
+For our counter page, we could have a file called ```counter_dom.html``` that looks like this: [counter_dom.html](/html/counter_dom.html).
+
+And a file called ```counter.js``` that looks like this: [counter.js](html/counter.js)
+
+Having JavaScript in a separate file is useful for a number of reasons:
+
+- Visual appeal: Our individual HTML and JavaScript files become more readable.
+
+- Access among HTML files: Now we can have multiple HTML files that all share the same JavaScript.
+
+- Collaboration: We can now easily have one person work on the JavaScript while another works on HTML.
+
+- Importing: We are able to import JavaScript libraries that other people have already written. For example [Bootstrap](https://getbootstrap.com/docs/4.5/getting-started/introduction/#js) has their own JavaScript library you can include to make your site more interactive.
+
+Let’s get started on another example of a page that can be a bit more interactive. Below, we’ll create a page where a user can type in their name to get a custom greeting.
+
+![](greetings.gif)
+
+Some notes about the page above:
+
+- We use the autofocus field in the name input to indicate that the cursor should be set inside that input as soon as the page is loaded.
+
+- We use #name inside of document.querySelector to find an element with an id of name. We can use all the same selectors in this function as we could in CSS.
+
+- We use the value attribute of an input field to find what is currently typed in.
+
+We can do more than just add HTML to our page using JavaScript, we can also change the styling of a page! In the page below, we use buttons to change the color of our heading.
