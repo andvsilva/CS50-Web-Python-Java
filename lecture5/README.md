@@ -110,8 +110,73 @@ Some notes about the page above:
 
 - We use the autofocus field in the name input to indicate that the cursor should be set inside that input as soon as the page is loaded.
 
-- We use #name inside of document.querySelector to find an element with an id of name. We can use all the same selectors in this function as we could in CSS.
+- We use ```#name``` inside of document.querySelector to find an element with an id of name. We can use all the same selectors in this function as we could in CSS.
 
 - We use the value attribute of an input field to find what is currently typed in.
 
 We can do more than just add HTML to our page using JavaScript, we can also change the styling of a page! In the page below, we use buttons to change the color of our heading.
+
+- [colors.html](/html/colors.html):
+  - We change the style of an element using the ```style.SOMETHING``` attribute.
+  - We use the ```data-SOMETHING``` attribute to assign data to an HTML element. We can later access that data in JavaScript using the element’s ```dataset``` property.
+  - We use the ```querySelectorAll``` function to get an [Node List](https://www.w3schools.com/js/js_htmldom_nodelist.asp) (similar to a Python list or a JavaScript array) with all elements that match the query.
+  - The [forEach](https://www.w3schools.com/jsref/jsref_foreach.asp) function in JavaScript takes in another function, and applies that function to each element in a list or array.
+
+### JavaScript Console
+
+The console is a useful tool for testing out small bits of code and debugging. You can write and run JavaScript code in the console, which can be found by inspecting element in your web browser and then clicking ```console```. For example, in the colors.html page above, I can add the following line:
+
+```bash
+console.log(document.querySelectorAll('button'));
+```
+
+### Arrow Functions
+
+In addition to the traditional function notation we’ve seen already, JavaScript now gives us the ability to use Arrow Functions where we have an input (or parentheses when there’s no input) followed by ```=>``` followed by some code to be run. For example, we can alter our script above to use an anonymous arrow function:
+
+```Bash
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('button').forEach(button => {
+        button.onclick = () => {
+            document.querySelector("#hello").style.color = button.dataset.color;
+        }
+    });
+});
+```
+
+We can also have named functions that use arrows, as in this rewriting of the count function:
+
+```bash
+count = () => {
+    counter++;
+    document.querySelector('h1').innerHTML = counter;
+    
+    if (counter % 10 === 0) {
+        alert(`Count is now ${counter}`)
+    }
+}
+```
+
+To get an idea about some other events we can use, let’s see how we can implement our color switcher using a dropdown menu instead of three separate buttons. We can detect changes in a select element using the onchange attribute. In JavaScript, [this](https://www.w3schools.com/js/js_this.asp) is a keyword that changes based on the context in which it’s used. In the case of an event handler, this refers to the object that triggered the event. This is in the file [colors_select.html](/html/colors_select.html).
+
+There are many other events we can detect in JavaScript including the common ones below:
+
+- ```onclick```
+- ```onmouseover```
+- ```onkeyup```
+- ```onload```
+- ```onblur```
+- ...
+
+### TODO List
+
+To put together a few of the things we’ve learned in this lecture, let’s work on making a TODO list entirely in JavaScript. We’ll start by writing the HTML layout of the page. Notice below how we leave space for an unorderd list, but we dont yet add anything to it. Also notice that we add a link to tasks.js where we’ll write our JavaScript.
+
+Now, here’s our code which we can keep in tasks.js. A few notes on what you’ll see below:
+
+- This code is slightly different from the code in lecture. Here, we only query for our submit button and input task field once in the beginning and store those two values in the variables ```submit``` and ```newTask```.
+- We can enable/disable a button by setting its disabled attribute to ```false/true```.
+- In JavaScript, we use ```.length``` to find the length of objects such as strings and arrays.
+- At the end of the script, we add the line return ```false```. This prevents the default submission of the form which involves either reloading the current page or redirecting to a new one.
+- In JavaScript, we can create HTML elements using the [createElement](https://www.w3schools.com/jsref/met_document_createelement.asp) function. We can then add those elements to the DOM using the append function.
+
