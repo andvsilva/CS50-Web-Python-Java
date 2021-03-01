@@ -180,3 +180,96 @@ Now, here’s our code which we can keep in tasks.js. A few notes on what you’
 - At the end of the script, we add the line return ```false```. This prevents the default submission of the form which involves either reloading the current page or redirecting to a new one.
 - In JavaScript, we can create HTML elements using the [createElement](https://www.w3schools.com/jsref/met_document_createelement.asp) function. We can then add those elements to the DOM using the append function.
 
+### Intervals
+
+In addition to specifying that functions run when an event is triggered, we can also set functions to run after a set amount of time. For example, let’s return to our counter page’s script, and add an interval so even if the user doesn’t click anything, the counter increments every second. To do this, we use the [setInterval](https://www.w3schools.com/jsref/met_win_setinterval.asp) function, which takes as argument a function to be run, and a time (in milliseconds) between function runs.
+
+```Bash
+let counter = 0;
+            
+function count() {
+    counter++;
+    document.querySelector('h1').innerHTML = counter;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelector('button').onclick = count;
+
+    setInterval(count, 1000);
+});
+```
+
+### Local Storage
+
+One thing to notice about all of our sites so far is that every time we reload the page, all of our information is lost. The heading color goes back to black, the counter goes back to 0, and all of the tasks are erased. Sometimes this is what we intend, but other time’s we’ll want to be able to store information that we can use when a user returns to the site.
+
+One way we can do this is by using [Local Storage](https://www.w3schools.com/jsref/prop_win_localstorage.asp), or storing information on the user’s web browser that we can access later. This information is stored as a set of key-value pairs, almost like a Python dictionary. In order to use local storage, we’ll employ two key functions:
+
+- ```localStorage.getItem(key)```: This function searches for an entry in local storage with a given key, and returns the value associated with that key.
+- ```localStorage.setItem(key, value)```:  This function sets and entry in local storage, associating the key with a new value.
+
+Let’s look at how we can use these new functions to update our counter! In the code [here](html/js/counter.js)
+
+### APIs 
+
+#### JavaScript Objects
+
+A [JavaScript Object](https://www.w3schools.com/js/js_objects.asp) is very similar to a python dictionarty, as it allow us to store key-valuee pairs. For example, I could create a JavaScript Object representing Harry Potter:
+
+```Bash
+let person = {
+    first: 'Harry',
+    last: 'Potter'
+};
+```
+
+I can then access or change parts of this object using either bracket or dot notation:
+
+![](figures/java_object.png)
+
+One way in which JavaScript Objects are really useful is in transferring data from one site to another, particularly when using [APIs](https://www.mulesoft.com/resources/api/what-is-an-api)
+
+For example, we may want our application to get information from Google Maps, Amazon, or some weather service. We can do this by making calls to a service’s API, which will return structured data to us, often in JSON (JavaScript Object Notation) form. For example, a flight in JSON form might look like this:
+
+```Bash
+{
+    "origin": "New York",
+    "destination": "London",
+    "duration": 415
+}
+```
+
+The values within a JSON do not have to just be strings and numbers as in the example above. We can also store lists, or even other JavaScript Objects:
+
+```Bash
+{
+    "origin": {
+        "city": "New York",
+        "code": "JFK"
+    },
+    "destination": {
+        "city": "London",
+        "code": "LHR"
+    },
+    "duration": 415
+}
+```
+### Currency Exchange
+
+To show how we can use APIs in our applications, let’s work on building an application where we can find exchange rates between two currencies. Throughout the exercise, we’ll be using the [European Central Bank’s Exchange Rate API](https://exchangeratesapi.io/)
+
+By visiting their website, you’ll see the API’s documentation, which is generally a good place to start when you wish to use an API. We can test this api by visiting the URL: https://api.exchangeratesapi.io/latest?base=USD. When you visit this page, you’ll see the exchange rate between the U.S. Dollar and many other currencies, written in JSON form. You can also change the GET parameter in the URL from USD to any other currency code to change the rates you get.
+
+Let’s take a look at how to implement this API into an application by creating a new HTML file called ```currency.html``` and link it to a JavaScript file but leave the body empty: code [currency.html](html/currency.html)
+
+Now, we’ll use something called [AJAX](https://www.w3schools.com/js/js_ajax_intro.asp), or Asynchronous JavaScript And XML, which allows us to access information from external pages even after our page has loaded. In order to do this, we’ll use the [fetch](https://javascript.info/fetch) function which will allow us to send an HTTP request. The ```fetch``` function returns a [promise](https://web.dev/promises/). We won’t talk about the details of what a promise is here, but we can think of it as a value that will come through at some point, but not necessarily right away. We deal with promises by giving them a ```.then``` attribute describing what should be done when we get a ```response```. The code snippet below will log our response to the console.
+
+One important point about the above code is that the argument of ```.then``` is always a function. Although it seems we are creating the variables response and and data, those variables are just the parameters of two anonymous functions.
+
+Rather than simply logging this data, we can use JavaScript to display a message to the screen, as in the code [here](html/currency.html):
+
+Now, let’s make the site a bit more interactive by allowing the user to choose which currency they would like to see. We’ll start by altering our HTML to allow the user to input a currency:
+
+Now, we’ll make some changes to our JavaScript so it only changes when the form is submitted, and so it takes into account the user’s input. We’ll also add some error checking [here](html/select_currency.html):
+
+That’s all for this lecture! Next time, we’ll work on using JavaScript to create even more engaging user interfaces!
