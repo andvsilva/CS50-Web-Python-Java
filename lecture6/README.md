@@ -10,4 +10,4 @@ A User Interface is how visitors to a web page interact with that page. Our goal
 ### Single Page Applications
 Previously, if we wanted a website with multiple pages, we would accomplish that using different routes in our Django application. Now, we have the ability to load just a single page and then use JavaScript to manipulate the DOM. One major advantage of doing this is that we only need to modify the part of the page that is actually changing. For example, if we have a Nav Bar that doesn’t change based on your current page, we wouldn’t want to have to re-render that Nav Bar every time we switch to a new part of the page.
 
-Let’s look at an example of how we could simulate page switching in JavaScript:
+Let’s look at an example of how we could simulate page switching in JavaScript: [code here](html/simplepage.html)
