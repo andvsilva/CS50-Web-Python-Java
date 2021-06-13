@@ -166,7 +166,123 @@ One disadvantage of our site though is that the URL is now less informative. You
 
 In the ```showSection``` function above, we employ the history.pushState function. This function adds a new element to our browsing history based on three arguments:
 
-    1. Any data associated with the state.
+    1 - Any data associated with the state.
     2 - A title parameter ignored by most web browsers
     3 - What should be displayed in the URL
 The other change we make in the above JavaScript is in setting the onpopstate parameter, which specifies what we should do when the user clicks the back arrow. In this case, we want to show the previous section when the button is pressed. Now, the site looks a little more user-friendly:
+
+#### Scroll
+
+In order to update and access the browser history, we used an important JavaScript object known as the [window](https://www.w3schools.com/js/js_window.asp). There are some other properties of the window that we can use to make our sites look nicer:
+
+- ```window.innerWidth```: Width of window in pixels
+- ```window.innerHeight```: Height of window in pixels
+
+While the window represents what is currently visible to the user, the [document](https://www.w3schools.com/js/js_htmldom_document.asp) refers to the entire web page, which is often much larger than the window, forcing the user to scroll up and down to see the page’s contents. To work with our scrolling, we have access to other variables:
+
+- ```window.scrollY```: How many pixels we have scrolled from the top of the page
+- ```document.body.offsetHeight```: The height in pixels of the entire document.
+
+We can use these measures to determine whether or not the user has scrolled to the end of a page using the comparison ```window.scrollY + window.innerHeight >= document.body.offsetHeight```. The following page, for example, will change the backgroud color to red when we reach the bottom of a page:
+
+
+#### Infinite Scrool
+
+Changing the background color at the end of the page probable isn't all that useful, but may want to detect that we're at the end of the page if want to implement **infinite scroll**. For example, if you're on a social media site, you don't want to have to load all posts at once, you might want to load the first ten, and then when the user reaches the bottom, load the next then. let's take a look at a **Django application** that could do this. This app has two paths in ```urls.py```
+
+Notice that the posts view requires two arguments: a start point and an end point. In this view, we’ve created our own **API**, which we can test out by visiting the url ```localhost:8000/posts?start=10&end=15```, which returns the following **JSON**:
+
+```bash
+{
+    "posts": [
+        "Post #10",
+        "Post #11", 
+        "Post #12", 
+        "Post #13", 
+        "Post #14", 
+        "Post #15"
+    ]
+}
+```
+
+```bash
+# Terminal
+
+$ cd scroll/
+$ python manage.py runserver
+$ python 
+google-chrome http://127.0.0.1:8000/
+
+http://127.0.0.1:8000/posts?start=10&end=15
+
+### You will see in the browser one Javascript Object:
+{"posts": ["Post #10", "Post #11", "Post #12", "Post #13", "Post #14", "Post #15"]}
+```
+
+Now, in the ```index.html``` template that the site loads, we start out with only an empty ```div``` in the body and some styling. Notice that we load our static files at the beginning, and then we reference a JavaScript file within our ```static``` folder.
+
+Now with JavaScript, we’ll wait until a user scrolls to the end of the page and then load more posts using our **API** - [index.html](scroll/posts/templates/posts/index.html)
+
+Now, we’ve created a site with infinite scroll!
+
+#### Animation
+
+Another way we can make our sites a bit more interesting is by adding some animation to them. It turns out that in addition to providing styling, **CSS makes it easy for us to animate HTML elements**.
+
+To create an animation in CSS, we use the format below, where the animation specifics can include starting and ending styles (```to``` and ```from```) or styles at different stages in the duration (anywhere from ```0%``` to ```100%```). For example:
+
+```bash
+@keyframes animation_name {
+    from {
+        /* Some styling for the start */
+    }
+
+    to {
+        /* Some styling for the end */
+    }
+}
+```
+
+or: 
+
+```bash
+@keyframes animation_name {
+    0% {
+        /* Some styling for the start */
+    }
+
+    75% {
+        /* Some styling after 3/4 of animation */
+    }
+
+    100% {
+        /* Some styling for the end */
+    }
+}
+```
+
+Then, to apply an animation to an element, we include the ```animation-name```, the ```animation-duration``` (in seconds), and the ```animation-fill-mode``` (typically ```forwards```). **For example, here’s a page where a title grows when we first enter the page:** [animate.html](html/animate.html)
+
+
+We can do more than just manipulate size: **the below example shows how we can change the position of a heading just by changing a few lines:** [animate1.html](html/animate1.html)
+
+Now, let’s look at setting some intermediate CSS properties as well. We can specify the style at any percentage of the way through an animation. In the below example we’ll move the title from left to right, and then back to left by altering only the animation from above
+
+
+```Bash
+@keyframes move {
+    0% {
+        left: 0%;
+    }
+    50% {
+        left: 50%;
+    }
+    100% {
+        left: 0%;
+    }
+}
+```
+
+If we want to repeat an animation multiple times, we can change the ```animation-iteration-count``` to a number higher than one (or even infinite for endless animation). There are many [animation properties](https://www.w3schools.com/cssref/css3_pr_animation.asp) that we can set in order to change different aspects of our animation.
+
+In addition to CSS, we can use JavaScript to further control our animations. Let’s use our moving header example (with infinite repetition) to show how we can create a button that starts and stops the animation. Assuming we already have an animation, button, and heading, we can add the following script to start and pause the animation:
