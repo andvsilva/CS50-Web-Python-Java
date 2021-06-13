@@ -558,7 +558,7 @@ count = () => {
 
 Now we have a functioning counter site: [counter.html](html/counter.html)
 
-#### Adition
+#### Addition
 
 Now that we have a feel for the React framework, let’s work on using what we’ve learned to build a game-like site where users will solve addition problems. We’ll begin by creating a new file with the same setup as our other React pages. To start building this application, let’s think about what we might want to keep track of in the state. We should include anything that we think might change while a user is on our page. Let’s set the state to include:
 
