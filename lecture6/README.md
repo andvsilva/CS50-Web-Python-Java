@@ -12,12 +12,12 @@ Previously, if we wanted a website with multiple pages, we would accomplish that
 
 Let’s look at an example of how we could simulate page switching in JavaScript: [code here](html/simplepage.html)
 
-```Bash
+```bash
 # TERMINAL
 $ google-chrome simplepage.html
 ```
 
-```Bash
+```bash
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -52,7 +52,7 @@ In many cases, it will be inefficient to load the entire contents of every page 
 
 
 #### Django Application - Single Page
-```Bash
+```bash
 $ django-admin startproject singlepage
 $ cd singlepage
 ### Run 'python manage.py migrate' to apply them.
@@ -93,7 +93,7 @@ Quit the server with CONTROL-C.
 
 **URL patterns in** [urls.py](singlepage/singlepage/views.py)
 
-```Bash
+```bash
 # Add
 from . import views
 
@@ -107,7 +107,7 @@ And two corresponding routes in [views.py](singlepage/../singlepage1/singlepage/
 
 Now, within our [index.html](singlepage/../singlepage1/singlepage/templates/singlepage/index.html) file, we’ll take advantage of AJAX, which we learned about last lecture, to make a request to the server to gain the text of a particular section and display it on the screen:
 
-```Bash
+```bash
 # TERMINAL
 $ google-chrome http://127.0.0.1:8000/sections/1
 $ google-chrome http://127.0.0.1:8000/sections/2
@@ -269,7 +269,7 @@ We can do more than just manipulate size: **the below example shows how we can c
 Now, let’s look at setting some intermediate CSS properties as well. We can specify the style at any percentage of the way through an animation. In the below example we’ll move the title from left to right, and then back to left by altering only the animation from above
 
 
-```Bash
+```bash
 @keyframes move {
     0% {
         left: 0%;
@@ -285,4 +285,413 @@ Now, let’s look at setting some intermediate CSS properties as well. We can sp
 
 If we want to repeat an animation multiple times, we can change the ```animation-iteration-count``` to a number higher than one (or even infinite for endless animation). There are many [animation properties](https://www.w3schools.com/cssref/css3_pr_animation.asp) that we can set in order to change different aspects of our animation.
 
-In addition to CSS, we can use JavaScript to further control our animations. Let’s use our moving header example (with infinite repetition) to show how we can create a button that starts and stops the animation. Assuming we already have an animation, button, and heading, we can add the following script to start and pause the animation:
+In addition to CSS, we can use JavaScript to further control our animations. Let’s use our moving header example (with infinite repetition) to show how we can create a button that starts and stops the animation. Assuming we already have an animation, **button, and heading, we can add the following script to start and pause the animation:** [animate2.html](html/animate2.html)
+
+Now, let’s look at how we can apply our new knowledge of animations to the posts page we made earlier. Specifically, let’s say we want the ability to hide posts once we’re done reading them. Let’s imagine a Django project identical to the one we just created, but with some slightly different HTML and JavaScript. The first change we’ll make is to the ```add_post``` function, this time also adding a button to the right side of the post: [index.html](hide/posts/templates/posts/index.html)
+
+```bash
+// file: hide/posts/templates/posts/index.html
+
+// Add a new post with given contents to DOM
+function add_post(contents) {
+
+    // Create new post
+    const post = document.createElement('div');
+    post.className = 'post';
+    post.innerHTML = `${contents} <button class="hide">Hide</button>`;
+
+    // Add post to DOM
+    document.querySelector('#posts').append(post);
+};
+```
+
+Now, we’ll work on hiding a post when the ```hide``` button is clicked. To do this, we’ll add an event listener that is triggered whenever a user clicks anywhere on the page. We then write a function that takes in the ```event``` as an argument, which is useful because we can use the ```event.target``` attribute to access what was clicked on. We can also use the ```parentElement``` class to find the parent of a given element in the DOM.
+
+```bash
+// file: hide/posts/templates/posts/index.html
+
+// If hide button is clicked, delete the post
+document.addEventListener('click', event => {
+
+    // Find what was clicked on
+    const element = event.target;
+
+    // Check if the user clicked on a hide button
+    if (element.className === 'hide') {
+        element.parentElement.remove()
+    }
+    
+});
+```
+#### Django application
+
+```bash
+# Terminal
+$ cd hide/ # Django application
+$ python manage.py runserver
+```
+
+We can now see that we’ve implemented the hide button, but it doesn’t look as nice as it possible could. Maybe we want to have the post fade away and shrink before we remove it. In order to do this, we’ll first create a CSS animation. The animation below will spend 75% of its time changing the ```opacity``` from 1 to 0, which esentially makes the post fade out slowly. It then spends the rest of the time moving all of its ```height```-related attributes to 0, effectively shrinking the post to nothing.
+
+```bash
+// file: hide/posts/templates/posts/index.html
+
+@keyframes hide {
+    0% {
+        opacity: 1;
+        height: 100%;
+        line-height: 100%;
+        padding: 20px;
+        margin-bottom: 10px;
+    }
+    75% {
+        opacity: 0;
+        height: 100%;
+        line-height: 100%;
+        padding: 20px;
+        margin-bottom: 10px;
+    }
+    100% {
+        opacity: 0;
+        height: 0px;
+        line-height: 0px;
+        padding: 0px;
+        margin-bottom: 0px;
+    }
+}
+```
+
+Next, we would add this animation to our post’s CSS. Notice that we initially set the ```animation-play-state``` to paused, meaning the post will not be hidden by default.
+
+```bash
+// file: hide/posts/templates/posts/index.html
+
+.post {
+    background-color: #77dd11;
+    padding: 20px;
+    margin-bottom: 10px;
+    animation-name: hide;
+    animation-duration: 2s;
+    animation-fill-mode: forwards;
+    animation-play-state: paused;
+}
+```
+
+Finally, we want to be able to start the animation once the ```hide``` button has been clicked, and then remove the post. We can do this by editing our JavaScript from above:
+
+```bash
+// file: hide/posts/templates/posts/index.html
+
+// If hide button is clicked, delete the post
+document.addEventListener('click', event => {
+    
+    // Find what was clicked on
+    const element = event.target;
+
+    // Check if the user clicked on a hide button
+    if (element.className === 'hide') {
+        element.parentElement.style.animationPlayState = 'running';
+        element.parentElement.addEventListener('animationend', () =>  {
+            element.parentElement.remove();
+        });
+    }
+});
+```
+
+```bash
+# Terminal
+$ cd hide/ # Django application
+$ python manage.py runserver &
+$ google-chrome http://127.0.0.1:8000/ 
+```
+
+As you can see above, the hide functionality now looks a lot nicer!
+
+### [React - A JavaScript library for building user interfaces](https://reactjs.org/)
+
+At this point, you can imagine how much JavaScript code would have to go into a more complicated website. We can mitigate how much code we actually need to write by employing a JavaScript framework, just as we employed Bootstrap as a CSS framework to cut down on the amount of CSS we actually had to write. One of the most popular JavaScript frameworks is a library called *React*.
+
+So far in this course, we’ve been using **imperative programming** methods, where we give the computer a set of statements to execute. For example, to update the counter in an HTML page we might have have code that looks like this:
+
+View:
+
+```bash
+<h1>0</h1>
+```
+
+Logic:
+```bash
+let num = parseInt(document.querySelector("h1").innerHTML);
+num += 1;
+document.querySelector("h1").innerHTML = num;
+```
+
+React allows us to use ```declarative programming```, which will allow us to simply write code explaining *what* we wish to display and not worry about *how* we’re displaying it. In React, a counter might look a bit more like this:
+
+View:
+
+```bash
+<h1>{num}</h1>
+```
+
+Logic:
+
+```bash
+num += 1;
+```
+
+The React framework is built around the idea of components, each of which can have an underlying state. A component would be something you can see on a web page like a post or a navigation bar, and a state is a set of variables associated with that component. The beauty of React is that when the state changes, React will automatically change the DOM accordingly.
+
+There are a number of ways to use React, (including the popular [create-react-app](https://reactjs.org/docs/create-a-new-react-app.html) command published by Facebook) but today we’ll focus on getting started directly in an HTML file. To do this, we’ll have to import three JavaScript Packages:
+
+- ```React```: Defines components and their behavior
+- ```ReactDOM```: Takes React components and inserts them into the DOM
+- ```Babel```: Translates from [JSX](https://reactjs.org/docs/introducing-jsx.html), the language in which we’ll write in React, to plain JavaScript that our browsers can interpret. JSX is very similar to JavaScript, but with some additional features, including the ability to represent HTML inside of our code.
+
+Let’s dive in and create our first React application! [react.html](html/react.html)
+
+Since this is our first React app, let’s take a detailed look at what each part of this code is doing:
+
+- In the three lines above the title, we import the latest versions of React, ReactDom, and Babel.
+- In the body, we include a single ```div``` with an ```id``` of ```app```. We almost always want to leave this empty, and fill it in our react code below.
+- We include a script tag where we specify that ```type="text/babel"```. This signals to the browser that the following script needs to be translated using Babel.
+- Next, we create a component called App that extends React.Component. Components in React are represented as JavaScript classes, which are similar to the Python classes we learned about earlier. This allows us to start creating a component without rewriting a lot of code included in the React.Component class definition.
+- Inside of our component, we include a render function. All componenets are required to have this function, and whatever is returned within the function will be added to the DOM, in this case, we are simply adding <div>Hello!</div>.
+- The last line of our script employs the ReactDOM.render function, which takes two arguments:
+  1. A component to render
+  2. An element in the DOM inside of which the component should be rendered
+
+Now that we understant what the code is doing, we can take a look at the resulting webpage:
+
+One useful feature of React is the ability to render components within other components. To demonstrate this, let’s create another component called ```Hello```:
+
+```bash
+class Hello extends React.Component {
+    render() { 
+        return (
+            <h1>Hello</h1>
+        );
+    }
+}
+```
+
+And now, let’s render three ```Hello``` components inside of our ```App``` component:
+
+```bash
+class App extends React.Component {
+    render() { 
+        return (
+            <div>
+                <Hello />
+                <Hello />
+                <Hello />
+            </div>
+        );
+    }
+}
+```
+
+This gives us a page that looks like: [react1.html](html/react1.html)
+
+So far, the components haven’t been all that interesting, as they are all exactly the same. We can make these components more flexible by adding additional properties (**props** in React terms) to them. For example, let’s say we wish to say hello to three different people. We can provide those people’s names in a method that looks similar to HTML tags:
+
+```bash
+class App extends React.Component {
+    render() { 
+        return (
+            <div>
+                <Hello name="Harry" />
+                <Hello name="Ron" />
+                <Hello name="Hermione" />
+            </div>
+        );
+    }
+}
+```
+
+```bash
+class Hello extends React.Component {
+    render() { 
+        return (
+            <h1>Hello, {this.props.name}!</h1>
+        );
+    }
+}
+```
+
+
+Now, our page displays the three names: [react2.html](html/react2.html)
+
+Now, let’s see how we can use React to re-implement the counter page we built when first working with JavaScript. Our overall structure will remain the same, but inside of our ```App``` class, we’ll include a ```constructor``` method, a method called when the component is first created. This constructor will always take ```props``` as an argument, and the first line will always be ```super(props)```; which sets up the object based on the ```React.Component``` class. Next, we initialize the state of the component, which is a JavaScript object that stores information about the component. At the moment, we’ll just set ```count``` to be 0.
+
+```bash
+constructor(props) {
+    super(props);
+    this.state = {
+        count: 0
+    };
+}
+```
+
+Now, we can work on the render function, where we’ll specify a header and a button. We’ll also add an event listener for when the button is clicked, which React does using the onClick attribute:
+
+```bash
+render() { 
+    return (
+        <div>
+            <h1>{this.state.count}</h1>
+            <button onClick={this.count}>Count</button>
+        </div>
+    );
+}
+```
+
+Finally, let’s define the count function. To do this, we’ll use the this.setState function, which can take as argument a function from the old state to the new state.
+
+```bash
+count = () => {
+    this.setState(state => ({
+        count: state.count + 1
+    }))
+}
+```
+
+Now we have a functioning counter site: [counter.html](html/counter.html)
+
+#### Adition
+
+Now that we have a feel for the React framework, let’s work on using what we’ve learned to build a game-like site where users will solve addition problems. We’ll begin by creating a new file with the same setup as our other React pages. To start building this application, let’s think about what we might want to keep track of in the state. We should include anything that we think might change while a user is on our page. Let’s set the state to include:
+
+- ```num1```: The first number to be added
+- ```num2```: The second number to be added
+- ```response```: What the user has typed in
+- ```score```: How many questions the user has answered correctly.
+
+Now, our constructor will look like this:
+
+```bash
+constructor(props) {
+    super(props);
+    this.state = {
+        num1: 1,
+        num2: 1,
+        response: '',
+        score: 0
+    };
+}
+```
+
+Now, using the values in the state, let’s create a render function with what we wish to display
+
+```bash
+render() { 
+    return (
+        <div>
+            <div>{this.state.num1} + {this.state.num2}</div>
+            <input type="text" value={this.state.response} />
+            <div> Score: {this.state.score}</div>
+        </div>
+    );
+}
+```
+
+At this point, the user cannot type anything in the input box because its value is fixed as ```this.state.response``` which is currently the empty string. To fix this, let’s add an ```onChange``` attribute to the input box, and set it equal to a function called ```updateResponse```
+
+```bash
+onChange={this.updateResponse}
+```
+
+Now, we’ll have to define the ```updateResponse``` function, which takes in the event that triggered the function, and sets the ```response``` to the current value of the input. This function allows the user to type, and stores whatever has been typed in the ```state```.
+
+```bash
+updateResponse = (event) => {
+    this.setState({
+        response: event.target.value
+    });
+}
+```
+
+Now, let’s add the ability for a user to submit a problem. We’ll first add another event listener and link it to a function we’ll write next:
+
+```bash
+onKeyPress={this.inputKeyPress}
+```
+
+Now, we’ll define the ```inputKeyPress``` function. In this function, we’ll first check whether the ```Enter``` key was pressed, and then check to see if the answer is correct. When the user is correct, we want to increase the score by 1, choose random numbers for the next problem, and clear the response. If the answer is incorrect, we want to decrease the score by 1 and clear the response.
+
+```bash
+inputKeyPress = (event) => {
+                    
+    // Check if the Enter key was pressed
+    if (event.key === 'Enter') {
+
+        // Extract answer
+        const answer = parseInt(this.state.response)
+
+        // Check if answer is correct
+        if (answer === this.state.num1 + this.state.num2) {
+            this.setState(state => ({
+                score: state.score + 1,
+                num1: Math.ceil(Math.random() * 10),
+                num2: Math.ceil(Math.random() * 10),
+                response: ''
+            }));
+        } else {
+            this.setState(state => ({
+                score: state.score - 1,
+                response: ''
+            }));
+        }
+    }
+}
+```
+
+To put some finishing touches on the application, let’s add some style to the page. We’ll center everything in the app, and then make the problem larger by adding an ```id``` of ```problem``` to the div containing the problem, and then adding the following CSS to a style tag:
+
+```bash
+#app {
+    text-align: center;
+    font-family: sans-serif;
+}
+
+#problem {
+    font-size: 72px;
+}
+```
+
+Finally, let’s add the ability to win the game after gaining 10 points. To do this, we’ll add a condition to the ```render``` function, returning something completely different once we have 10 points:
+
+```bash
+render() { 
+
+    // Check if the score is 10
+    if (this.state.score === 10) {
+        return (
+            <div id="winner">
+                You won!
+            </div>
+        );
+    }
+
+    return (
+        <div>
+            <div id="problem">{this.state.num1} + {this.state.num2}</div>
+            <input onKeyPress={this.inputKeyPress} onChange={this.updateResponse} type="text" value={this.state.response} />
+            <div> Score: {this.state.score}</div>
+        </div>
+    );
+}
+```
+
+To make the win more exciting, we’ll add some style to the alternative div as well:
+
+```bash
+#winner {
+    font-size: 72px;
+    color: green;
+}
+```
+
+Now, let’s take a look at our application: [addition.html](html/addition.html)
+
+That’s all for lecture today! Next time, we’ll talk about some best practices for building larger web applications.
