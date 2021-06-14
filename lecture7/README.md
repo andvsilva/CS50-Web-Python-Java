@@ -593,6 +593,79 @@ if __name__ == "__main__":
     unittest.main()
 ```
 
-Now, if we run python ```tests.py```, our simulations will be carried out in the browser, and then the results of the tests will be printed to the console. Here’s an example of what this might look like when we have a bug in the code a test fails:
+Now, if we run python ```tests.py```, our simulations will be carried out in the browser, and then the results of the tests will be printed to the console. Here’s an example of what this might look like when we have a bug in the code a test fails: 
 
-### Useful resources
+## CI/CD
+
+**CI/CD**, which stands for **Continuous Integration and Continuous Delivery**, is a set of software development best practices that dictate how code is written by a team of people, and how that code is later delivered to users of the application. As the name implies, this method consists of two main parts:
+
+- Continuous Integration:
+  - Frequent merges to the main branch
+  - Automated unit testing with each merge
+- Continuous Delivery:
+  - Short release schedules, meaning new versions of an application are released frequently.
+
+CI/CD has become more and more popular among software development teams for a number of reasons:
+
+- When different team members are working on different features, many compatibility issues can arise when multiple features are combined at the same time. Continuous integration allows teams to tackle small conflicts as they come.
+
+- Because unit tests are run with each Merge, when a test fails it is easier to isolate the part of the code that is causing the problem.
+- Frequently releasing new versions of an application allows developers to isolate problems if they arise after launch.
+- Releasing small, incremental changes allows users to slowly get used to new app features rather than being overwhelmed with an entirely different version
+- Not waiting to release new features allows companies to stay ahead in a competitive market.
+
+## GitHub Actions
+
+One popular tool used to help with continuous integration is known as [GitHub Actions](https://github.com/features/actions). GitHub Actions will allow us to create workflows where we can specify certain actions to be performed every time someone pushes to a git repository. For example, we might want to check with every push that a style guide is adhered to, or that a set of unit tests is passed.
+
+In order to set up a GitHub action, we’ll use a configuration language called **YAML**. YAML structures its data around key-value pairs (like a JSON object or Python Dictionary). Here’s an example of a simple YAML file:
+
+```bash
+key1: value1
+key2: value2
+key3:
+    - item1
+    - item2
+    - item3
+```
+
+Now, let’s look at an example of how we would configure a YAML file (which takes the form ```name.yml``` or ```name.yaml```) that works with GitHub Actions. To do this, I’ll create a ```.github directory``` in my repository, and then a ```workflows``` directory inside of that, and finally a ```ci.yml``` file within that. In that file, we’ll write:
+
+```bash
+name: Testing
+on: push
+
+jobs:
+  test_project:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run Django unit tests
+      run: |
+        pip3 install --user django
+        python3 manage.py test
+```
+
+Since this is our first time using GitHub Actions, let’s go through what each part of this file is doing:
+
+- First, we give the workflow a ```name```, which in our case is Testing.
+- Next, with the ```on``` key, we specify when the workflow should run. In our case, we wish to perform the tests every time someone pushes to the repository.
+- The rest of the file is contained within a ```jobs``` key, which indicates which jobs should be run at every push.
+  - In our case, the only job is test_project. Every job must define two components
+    - The ```runs-on``` key specifies which of GitHub’s virtual machines we would like our code to be run on.
+    - The ```steps``` key provides the actions that should occur when this job is run
+      - In the ```uses``` key we specify which GitHub action we wish to use. ```actions/checkout@v2``` is an action written by GitHub that we can use.
+      - The ```name``` key here allows us to provide a description of the action we’re taking
+      - After the ```run``` key, we type the commands we wish to run on GitHub’s server. In our case we wish to install Django and then run the testing file.
+
+Now, let’s open up our repository in GitHub and take a look at some of the tabs near the top of the page:
+
+- **Code**: This is the tab that we’ve been using most frequently, as it allows us to view the files and folders within our directory.
+
+- **Issues**: Here we can open and close issues, which are requests for bug fixes or new features. We can think of this as a to-do list for our application.
+
+- **Pull Requests**: Requests from people who wish to merge some code from one branch into another one. This is a useful tool, as it allows people to perform code reviews where they comment and provide suggestions before code is integrated into the master branch.
+
+- **GitHub Actions**: This is the tab we’ll use when working on continuous integration, as it provides logs of the actions that have taken place after each push.
+
+### Useful Resources
