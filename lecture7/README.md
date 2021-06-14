@@ -132,22 +132,132 @@ ERROR on is_prime(25), expected False
 
 Even though we were able to run tests automatically using the above method, we still might want to avoid having to write out each of those tests. Thankfully, we can use the Python ```unittest``` library to make this process a little bit easier. Let’s take a look at what a testing program might look like for our ```is_prime``` function.
 
+```bash
+## File: tests1.py 
+
+# Import the unittest library and our function
+import unittest
+from prime import is_prime
+
+# A class containing all of our tests
+class Tests(unittest.TestCase):
+
+    def test_1(self):
+        """Check that 1 is not prime.""" ## the comment will be displayed as a discription of the test if it fails
+        self.assertFalse(is_prime(1))
+
+    def test_2(self):
+        """Check that 2 is prime."""
+        self.assertTrue(is_prime(2))
+
+    def test_8(self):
+        """Check that 8 is not prime."""
+        self.assertFalse(is_prime(8))
+
+    def test_11(self):
+        """Check that 11 is prime."""
+        self.assertTrue(is_prime(11))
+
+    def test_25(self):
+        """Check that 25 is not prime."""
+        self.assertFalse(is_prime(25))
+
+    def test_28(self):
+        """Check that 28 is not prime."""
+        self.assertFalse(is_prime(28))
 
 
+# Run each of the testing functions
+if __name__ == "__main__":
+    unittest.main()
+```
 
+Notice that each of the functions within our ```Tests``` class followed a pattern:
 
+- The name of the functions begin with ```test_```. This is necessary for the functions to be run automatically with the call to ```unittest.main()```.
+- Each test takes in the ```self``` argument. This is standard when writing methods within Python classes.
+- The first line of each function contains a docstring surrounded by three quotation marks. These are not just for the code’s readability. When the tests are run, the comment will be displayed as a discription of the test if it fails.
+- The next line of each of the functions contained an assertion in the form ```self.assertSOMETHING```. There are many different assertions you can make including ```assertTrue```, ```assertFalse```, ```assertEqual```, and ```assertGreater```. You can find these ones and more by checking out the [documentation](https://docs.python.org/3/library/unittest.html#unittest.TestCase.assertEqual).
 
+Now, let’s check out the results of these tests:
 
+```bash
+$ python test1.py                                                            185ms 
+...F.F
+======================================================================
+FAIL: test_25 (__main__.Tests)
+Check that 25 is not prime.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "test1.py", line 26, in test_25
+    self.assertFalse(is_prime(25))
+AssertionError: True is not false
 
+======================================================================
+FAIL: test_8 (__main__.Tests)
+Check that 8 is not prime.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "test1.py", line 18, in test_8
+    self.assertFalse(is_prime(8))
+AssertionError: True is not false
 
+----------------------------------------------------------------------
+Ran 6 tests in 0.001s
 
+FAILED (failures=2)
+```
 
+After running the tests, ```unittest``` provides us with some useful information about what it found. In the first line, it gives us a series of ```.```s for successes and ```F```s for failures in the order our tests were written.
 
+```bash
+...F.F
+```
 
+Next, for each of the tests that failed, we are then given the name of the function that failed:
 
+```bash
+FAIL: test_25 (__main__.Tests)
+```
 
+the descriptive comment we provided earlier:
 
+```bash
+Check that 25 is not prime.
+```
+And a traceback for the exception:
 
+```bash
+Traceback (most recent call last):
+  File "tests1.py", line 26, in test_25
+    self.assertFalse(is_prime(25))
+AssertionError: True is not false
+```
+
+And finally, we are given a run through of how many tests were run, how much time they took, and how many failed:
+
+```bash
+Ran 6 tests in 0.001s
+
+FAILED (failures=2)
+```
+Now let’s take a look at fixing the bug in our function. It turns out that we need to test one additional number in our ```for``` loop. For example, when ```n``` is 25, the square root is ```5```, but when that is one argument in the range function, the ```for``` loop terminates at the number ```4```. Therefore, we can simply change the header of our ```for``` loop to:
+
+```bash
+for i in range(2, int(math.sqrt(n)) + 1):
+```
+Now, when we run the tests again using our unit tests, we get the following output, indicating that our change fixed the bug.
+
+```bash
+$ python tests1.py 
+......
+---------------------------------------------
+Ran 6 tests in 0.001s
+
+OK
+```
+
+These automated tests will become even more useful as you work to optimize this function. For example, you might want to use the fact that you don’t need to check all integers as factors, just smaller primes (if a number is not divisible by 3, it is also not divisible by 6, 9, 12, …), or you may want to use more advanced probabilistic primality tests such as the [Fermat](https://en.wikipedia.org/wiki/Fermat_primality_test) and [Miller-Rabin](https://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test) primality tests. Whenever you make changes to improve this function, you’ll want the ability to easily run your unit tests again to make sure your function is still correct.
 
 
 
