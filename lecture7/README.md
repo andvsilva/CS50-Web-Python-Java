@@ -259,6 +259,239 @@ OK
 
 These automated tests will become even more useful as you work to optimize this function. For example, you might want to use the fact that you don’t need to check all integers as factors, just smaller primes (if a number is not divisible by 3, it is also not divisible by 6, 9, 12, …), or you may want to use more advanced probabilistic primality tests such as the [Fermat](https://en.wikipedia.org/wiki/Fermat_primality_test) and [Miller-Rabin](https://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test) primality tests. Whenever you make changes to improve this function, you’ll want the ability to easily run your unit tests again to make sure your function is still correct.
 
+## Django Testing
+
+Now, let’s look at how we can apply the ideas of automated testing when creating **Django applications**. While working with this, we’ll be using the ```flights``` project we created when we first learned about Django models. We’re first going to add a method to our ```Flight``` model that verifies that a flight is valid by checking for two conditions:
+
+1. The origin is not the same as the destination
+2. The duration is greater than 0 minutes
+
+Now, our model could look something like this:
+
+```bash
+class Flight(models.Model):
+    origin = models.ForeignKey(Airport, on_delete=models.CASCADE, related_name="departures")
+    destination = models.ForeignKey(Airport, on_delete=models.CASCADE, related_name="arrivals")
+    duration = models.IntegerField()
+
+    def __str__(self):
+        return f"{self.id}: {self.origin} to {self.destination}"
+
+    def is_valid_flight(self):
+        return self.origin != self.destination or self.duration > 0
+```
+
+In order to make sure our application works as expected, whenever we create a new application, we are automatically given a ```tests.py``` file. When we first open this file, we see that Django’s [TestCase](https://docs.djangoproject.com/en/3.0/topics/testing/overview/) library is automatically imported:
+
+```bash
+from django.test import TestCase
+```
+
+One advantage to using the ```TestCase``` library is that when we run our tests, an entirely new database will be created for testing purposes only. This is helpful because we avoid the risk of accidentally modifying or deleting existing entries in our database and we don’t have to worry about removing dummy entries that we created only for testing.
+
+To start using this library, we’ll first want to import all of our models:
+
+```bash
+from .models import Flight, Airport, Passenger
+```
+
+And then we’ll create a new class that extends the ```TestCase``` class we just imported. Within this class, we’ll define a ```setUp``` function that will be run at the start of the testing process. In this function, we’ll probably want to create. Here’s what our class will look like to start:
+h
+```bash
+class FlightTestCase(TestCase):
+
+    def setUp(self):
+
+        # Create airports.
+        a1 = Airport.objects.create(code="AAA", city="City A")
+        a2 = Airport.objects.create(code="BBB", city="City B")
+
+        # Create flights.
+        Flight.objects.create(origin=a1, destination=a2, duration=100)
+        Flight.objects.create(origin=a1, destination=a1, duration=200)
+        Flight.objects.create(origin=a1, destination=a2, duration=-100)
+```
+
+Now that we have some entries in our testing database, let’s add some functions to this class to perform some tests. First, let’s make sure our ```departures``` and ```arrivals``` fields work correctly by attempting to count the number of departures (which we know should be 3) and arrivals (which should be 1) from airport ```AAA```:
+
+```bash
+def test_departures_count(self):
+    a = Airport.objects.get(code="AAA")
+    self.assertEqual(a.departures.count(), 3)
+
+def test_arrivals_count(self):
+    a = Airport.objects.get(code="AAA")
+    self.assertEqual(a.arrivals.count(), 1)
+```
+
+We can also test the ```is_valid_flight``` function we added to our Flight model. We’ll begin by asserting that the function does return true when the flight is valid:
+
+```bash
+def test_valid_flight(self):
+    a1 = Airport.objects.get(code="AAA")
+    a2 = Airport.objects.get(code="BBB")
+    f = Flight.objects.get(origin=a1, destination=a2, duration=100)
+    self.assertTrue(f.is_valid_flight())
+```
+
+Next, let’s make sure that flights with invalid destinations and durations return false:
+
+```bash
+def test_invalid_flight_destination(self):
+    a1 = Airport.objects.get(code="AAA")
+    f = Flight.objects.get(origin=a1, destination=a1)
+    self.assertFalse(f.is_valid_flight())
+
+def test_invalid_flight_duration(self):
+    a1 = Airport.objects.get(code="AAA")
+    a2 = Airport.objects.get(code="BBB")
+    f = Flight.objects.get(origin=a1, destination=a2, duration=-100)
+    self.assertFalse(f.is_valid_flight())
+```
+
+Now, to run our tests, we’ll run ```python manage.py test```. The output for this is almost identical to the output we saw while using the Python ```unittest``` library, although it also logs that it is creating and destroying a testing database:
+
+```bash
+# Terminal
+$ cd airline0
+$ python manage.py test
+```
+
+```bash
+Creating test database for alias 'default'...
+System check identified no issues (0 silenced).
+..FF.
+======================================================================
+FAIL: test_invalid_flight_destination (flights.tests.FlightTestCase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/cleggett/Documents/cs50/web_notes_files/7/django/airline/flights/tests.py", line 37, in test_invalid_flight_destination
+    self.assertFalse(f.is_valid_flight())
+AssertionError: True is not false
+
+======================================================================
+FAIL: test_invalid_flight_duration (flights.tests.FlightTestCase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/cleggett/Documents/cs50/web_notes_files/7/django/airline/flights/tests.py", line 43, in test_invalid_flight_duration
+    self.assertFalse(f.is_valid_flight())
+AssertionError: True is not false
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.018s
+
+FAILED (failures=2)
+Destroying test database for alias 'default'...
+```
+
+We can see from the above output that there are times when ```is_valid_flight``` returned ```True``` when it should have returned ```False```. We can see, upon further inspection of our function, that we made the mistake of using ```or``` instead of ```and```, meaning that only one of the flight requirements must be filled for the flight to be valid. If we change the function to this:
+
+```bash
+# Terminal
+$ cd airline0/
+$ python manage.py test
+def is_valid_flight(self):
+    return self.origin != self.destination and self.duration > 0
+```
+
+We can then run the tests again with better results:
+
+```bash
+# Terminal
+Creating test database for alias 'default'...
+System check identified no issues (0 silenced).
+.....
+----------------------------------------------------------------------
+Ran 5 tests in 0.014s
+
+OK
+Destroying test database for alias 'default'...
+```
+
+## Client Testing
+
+When creating web applications, we will probably want to check not just whether or not specific functions work, but also whether or not individual web pages load as intended. We can do this by creating a ```Client``` object in our Django testing class, and then making requests using that object. To do this, we’ll first have to add ```Client``` to our imports:
+
+```bash
+from django.test import Client, TestCase
+```
+
+For example, let’s now add a test that makes sure that we get an HTTP response code of 200 and that all three of our flights are added to the context of a response:
+
+```bash
+def test_index(self):
+
+    # Set up client to make requests
+    c = Client()
+
+    # Send get request to index page and store response
+    response = c.get("/flights/")
+
+    # Make sure status code is 200
+    self.assertEqual(response.status_code, 200)
+
+    # Make sure three flights are returned in the context
+    self.assertEqual(response.context["flights"].count(), 3)
+```
+
+We can similarly check to make sure we get a valid response code for a valid flight page, and an invalid response code for a flight page that doesn’t exist. (Notice that we use the ```Max``` function to find the maximum ```id```, which we have access to by including ```from django.db.models import Max``` at the top of our file)
+
+```bash
+def test_valid_flight_page(self):
+    a1 = Airport.objects.get(code="AAA")
+    f = Flight.objects.get(origin=a1, destination=a1)
+
+    c = Client()
+    response = c.get(f"/flights/{f.id}")
+    self.assertEqual(response.status_code, 200)
+
+def test_invalid_flight_page(self):
+    max_id = Flight.objects.all().aggregate(Max("id"))["id__max"]
+
+    c = Client()
+    response = c.get(f"/flights/{max_id + 1}")
+    self.assertEqual(response.status_code, 404)
+```
+
+Finally, let’s add some testing to make sure the passengers and non-passengers lists are being generated as expected:
+
+```bash
+def test_flight_page_passengers(self):
+    f = Flight.objects.get(pk=1)
+    p = Passenger.objects.create(first="Alice", last="Adams")
+    f.passengers.add(p)
+
+    c = Client()
+    response = c.get(f"/flights/{f.id}")
+    self.assertEqual(response.status_code, 200)
+    self.assertEqual(response.context["passengers"].count(), 1)
+
+def test_flight_page_non_passengers(self):
+    f = Flight.objects.get(pk=1)
+    p = Passenger.objects.create(first="Alice", last="Adams")
+
+    c = Client()
+    response = c.get(f"/flights/{f.id}")
+    self.assertEqual(response.status_code, 200)
+    self.assertEqual(response.context["non_passengers"].count(), 1)
+```
+
+Now, we can run all of our tests together, and see that at the moment we have no errors!
+
+```bash
+# Terminal
+$ cd airline0
+$ python manage.py test
+Creating test database for alias 'default'...
+System check identified no issues (0 silenced).
+....<HttpResponse status_code=200, "text/html; charset=utf-8">
+......
+----------------------------------------------------------------------
+Ran 10 tests in 0.315s
+
+OK
+Destroying test database for alias 'default'...
+```
 
 
 ### Useful resources

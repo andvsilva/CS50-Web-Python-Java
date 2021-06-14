@@ -1,5 +1,5 @@
 #!/bin/bash
-# script to commit to repo.
+echo "script to commit to repo."
 echo "${1}"
 
 echo "Add changes in files or directory..."
