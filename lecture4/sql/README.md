@@ -18,8 +18,43 @@
 - Cloud
 - Relational
 
+### Key elements of SQL for Data Science
+
+- Relational Database Model
+- SQL Query Commands
+- Handling Null Values
+- Working with Indexes
+- Joins
+- Keys Constraints
+- Working with SubQuery
+- Creating Tables and Databases
+
+
+### SQL with Python
+
+#### Python provides multiple libraries
+
+- [SQLite](SQLite)
+- [PostgreSQL](PostgreSQL)
+- [MySQL](MySQL)
+
+Data Scientists need to connect a SQL database so that data coming from the web application can be stored. It also helps to communicate between different data sources.
+
+They will be able to use your Python skills to manipulate data stored in a SQL database. **They don’t need a CSV file.**
+
+#### MySQL with Python
+
+MySQL database consist two-step process for creating a database:
+
+1. Make a connection to a MySQL server.
+
+2. Execute separate queries to create the database and process data.
+
+```Bash
+pip install mysql-connector-python
+```
  
-### Instalation
+### Installation
 
 ```Bash
 # install for manjaro
@@ -107,3 +142,5 @@ MariaDB [mydatabase]> SELECT * FROM books;
 - [MySQL on Manjaro](https://medium.com/@rshrc/mysql-on-manjaro-973e4bfc4f05)
 
 - [How To Install MySQL on Ubuntu 20.04](https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-20-04)
+
+- [SQL For Data Science: A Beginner’s Guide!](https://www.analyticsvidhya.com/blog/2021/06/sql-for-data-science-a-beginners-guide/) 
