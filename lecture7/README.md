@@ -493,5 +493,106 @@ OK
 Destroying test database for alias 'default'...
 ```
 
+## Selenium
+
+So far, we’ve been able to test out the server-side code we’ve written using Python and Django, but as we’re building up our applications we’ll want the ability to create tests for our client-side code as well. For example, let’s think back to our ```counter.html``` page and work on writing some tests for it.
+
+We’ll begin by writing a slightly different counter page where we include a button to decrease the count: [counter.html](selenium/counter.html)
+
+Now if we wish to test this code, we could just open up our web browser, click the two buttons, and observe what happens. This, however, would become very tedious as you write larger and larger single page applications, which is why several frameworks have been created that help with in-browser testing, one of which is called [Selenium](https://www.selenium.dev/).
+
+Using Selenium, we’ll be able to define a testing file in Python where we can simulate a user opening a web browser, navigating to our page, and interacting with it. Our main tool when doing this is known as a **Web Driver**, which will open up a web browser on your computer. Let’s take a look at how we could start using this library to begin interacting with pages. Note that below we use both ```selenium``` and ```ChromeDriver```. Selenium can be installed for python by running ```pip install selenium```, and ```ChromeDriver``` can be installed by running ```pip install chromedriver-py```
+
+
+```bash
+import os
+import pathlib
+import unittest
+
+from selenium import webdriver
+
+# Finds the Uniform Resourse Identifier of a file
+def file_uri(filename):
+    return pathlib.Path(os.path.abspath(filename)).as_uri()
+
+# Sets up web driver using Google chrome
+driver = webdriver.Chrome()
+```
+
+The above code is all of the basic setup we need, so now we can get into some more interesting uses by employing the Python interpreter. One note about the first few lines is that in order to target a specific page, we need that page’s **Uniform Resource Identifier (URI)** which is a unique string that represents that resource.
+
+```bash
+Python 3.7.9 (default, Aug 31 2020, 12:42:55) 
+[GCC 7.3.0] :: Anaconda, Inc. on linux
+Type "help", "copyright", "credits" or "license" for more information.
+
+>>> from tests import *
+
+# Find the URI of our newly created file
+>>> uri = file_uri("counter.html")
+
+# Use the URI to open the web page
+>>> driver.get(uri)
+
+# Access the title of the current page
+>>> driver.title
+'Counter'
+
+# Access the source code of the page
+>>> driver.page_source
+'<html lang="en"><head>\n        <title>Counter</title>\n        <script>\n            \n            // Wait for page to load\n            document.addEventListener(\'DOMContentLoaded\', () => {\n\n                // Initialize variable to 0\n                let counter = 0;\n\n                // If increase button clicked, increase counter and change inner html\n                document.querySelector(\'#increase\').onclick = () => {\n                    counter ++;\n                    document.querySelector(\'h1\').innerHTML = counter;\n                }\n\n                // If decrease button clicked, decrease counter and change inner html\n                document.querySelector(\'#decrease\').onclick = () => {\n                    counter --;\n                    document.querySelector(\'h1\').innerHTML = counter;\n                }\n            })\n        </script>\n    </head>\n    <body>\n        <h1>0</h1>\n        <button id="increase">+</button>\n        <button id="decrease">-</button>\n    \n</body></html>'
+
+# Find and store the increase and decrease buttons:
+>>> increase = driver.find_element_by_id("increase")
+>>> decrease = driver.find_element_by_id("decrease")
+
+# Simulate the user clicking on the two buttons
+>>> increase.click()
+>>> increase.click()
+>>> decrease.click()
+
+# We can even include clicks within other Python constructs:
+>>> for i in range(25):
+...     increase.click()
+```
+
+Now let’s take a look at how we can use this simulation to create automated tests of our page:
+
+```bash
+# Standard outline of testing class
+class WebpageTests(unittest.TestCase):
+
+    def test_title(self):
+        """Make sure title is correct"""
+        driver.get(file_uri("counter.html"))
+        self.assertEqual(driver.title, "Counter")
+
+    def test_increase(self):
+        """Make sure header updated to 1 after 1 click of increase button"""
+        driver.get(file_uri("counter.html"))
+        increase = driver.find_element_by_id("increase")
+        increase.click()
+        self.assertEqual(driver.find_element_by_tag_name("h1").text, "1")
+
+    def test_decrease(self):
+        """Make sure header updated to -1 after 1 click of decrease button"""
+        driver.get(file_uri("counter.html"))
+        decrease = driver.find_element_by_id("decrease")
+        decrease.click()
+        self.assertEqual(driver.find_element_by_tag_name("h1").text, "-1")
+
+    def test_multiple_increase(self):
+        """Make sure header updated to 3 after 3 clicks of increase button"""
+        driver.get(file_uri("counter.html"))
+        increase = driver.find_element_by_id("increase")
+        for i in range(3):
+            increase.click()
+        self.assertEqual(driver.find_element_by_tag_name("h1").text, "3")
+
+if __name__ == "__main__":
+    unittest.main()
+```
+
+Now, if we run python ```tests.py```, our simulations will be carried out in the browser, and then the results of the tests will be printed to the console. Here’s an example of what this might look like when we have a bug in the code a test fails:
 
 ### Useful resources
