@@ -668,4 +668,6 @@ Now, let’s open up our repository in GitHub and take a look at some of the tab
 
 - **GitHub Actions**: This is the tab we’ll use when working on continuous integration, as it provides logs of the actions that have taken place after each push.
 
+Here, let’s imagine that we pushed our changes before we fixed the bug we had in the **is_valid_flight** function in ```models.py``` within our airport project. We can now navigate to the GitHub Actions tab, click on our most recent push, click on the action that failed, and view the log:
+
 ### Useful Resources
