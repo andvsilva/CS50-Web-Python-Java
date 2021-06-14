@@ -5,18 +5,31 @@ name: Testing
 
 on:
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    branches: [main]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-    
+
     steps:
-    - uses: actions/checkout@v2
-    - name: Run Django unit tests
-      run: |
+      # Checks-out your repository under $GITHUB_WORKSPACE
+      - uses: actions/checkout@v2
+
+      # Set up Python 3.7 environment
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v1
+        with:
+          python-version: "3.7"
+
+      # Install dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip3 install --upgrade pip3
+          pip3 install -r requirements.txt
+
+      # Run our unit tests
+      - uses: actions/checkout@v2
+      - name: Run Django unit tests
+        run: |
         pip3 install --user django
         python3 manage.py test
