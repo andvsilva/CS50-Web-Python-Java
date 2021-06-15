@@ -629,7 +629,7 @@ key3:
     - item3
 ```
 
-Now, let’s look at an example of how we would configure a YAML file (which takes the form ```name.yml``` or ```name.yaml```) that works with GitHub Actions. To do this, I’ll create a ```.github directory``` in my repository, and then a ```workflows``` directory inside of that, and finally a ```ci.yml``` file within that. In that file, we’ll write:
+Now, let’s look at an example of how we would configure a YAML file (which takes the form ```name.yml``` or ```name.yaml```) that works with GitHub Actions. To do this, I’ll create a ```.github directory``` in my repository, and then a ```workflows``` directory inside of that, and finally a ```main.yml``` file within that (```CS50-Web-Python-Java/.github/workflows```). In that file, we’ll write:
 
 ```bash
 name: Testing
@@ -668,6 +668,113 @@ Now, let’s open up our repository in GitHub and take a look at some of the tab
 
 - **GitHub Actions**: This is the tab we’ll use when working on continuous integration, as it provides logs of the actions that have taken place after each push.
 
-Here, let’s imagine that we pushed our changes before we fixed the bug we had in the **is_valid_flight** function in ```models.py``` within our airport project. We can now navigate to the GitHub Actions tab, click on our most recent push, click on the action that failed, and view the log:
+Here, let’s imagine that we pushed our changes before we fixed the bug we had in the **is_valid_flight** function in ```models.py``` within our airport project. We can now navigate to the GitHub Actions tab, click on our most recent push, click on the action that failed, and view the log: [GitHub Actions - Workflow](https://github.com/andvsilva/CS50-Web-Python-Java/actions)
+
+```bash
+# Run Django unit tests
+
+System check identified 3 issues (0 silenced).
+<HttpResponse status_code=200, "text/html; charset=utf-8">
+.....FF...
+======================================================================
+FAIL: test_invalid_flight_destination (flights.tests.FlightTestCase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/runner/work/CS50-Web-Python-Java/CS50-Web-Python-Java/lecture7/airline0/flights/tests.py", line 37, in test_invalid_flight_destination
+    self.assertFalse(f.is_valid_flight())
+AssertionError: True is not false
+
+======================================================================
+FAIL: test_invalid_flight_duration (flights.tests.FlightTestCase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/runner/work/CS50-Web-Python-Java/CS50-Web-Python-Java/lecture7/airline0/flights/tests.py", line 43, in test_invalid_flight_duration
+    self.assertFalse(f.is_valid_flight())
+AssertionError: True is not false
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.052s
+
+FAILED (failures=2)
+Destroying test database for alias 'default'...
+Error: Process completed with exit code 1.
+```
+
+Now, after fixing the bug, we could bush again and find a better outcome: [GitHub Actions - Workflow](https://github.com/andvsilva/CS50-Web-Python-Java/actions)
+
+## Docker
+
+Problems can arise in the world of software development when the configuration on your computer is different than the one your application is being run on. You may have a different version of Python or some additional packages installed that allow the application to run smoothly on your computer, while it would crash on your server. To avoid these problems, we need a way to make sure everyone working on a project is using the same environment. One way to do this is to use a tool called ***Docker**, which is a containerization software, meaning it creates an isolated environment within your computer that can be standardized among many collaborators and the server on which your site is run. While Docker is a bit like a **Virtual Machine**, they are in fact different technologies. A virtual machine (like the one used on GitHub Actions or when you launch an [AWS](https://aws.amazon.com/) server) is effectively an entire virtual computer with its own operating system, meaning it ends up taking a lot of space wherever it is running. Dockers, on the other hand, work by setting up a container within an existing computer, therefore taking up less space.
+
+Now that we have an idea of what a Docker container is, let’s take a look at how we can configure one on our computers. Our first step in doing this will be to create a **Docker File** which we’ll name ```Dockerfile```. Inside this file, we’ll provide instructions for how to create a **Docker Image** which describes the libraries and binaries we wish to include in our container. Here’s an example of what our ```Dockerfile``` might look like:
+
+```bash
+FROM python:3
+COPY .  /usr/src/app
+WORKDIR /usr/src/app
+RUN pip install -r requirements.txt
+CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
+```
+
+Here, we’ll take an in-depth look at what the above file actually does:
+
+- ```FROM python3```: this shows that we are basing this image off of a standard image in which Python 3 is installed. This is fairly common when writing a Docker File, as it allows you to avoid the work of re-defining the same basic setup with each new image.
+
+- ```COPY . /usr/src/app```: This shows that we wish to copy everything from our current directory (```.```) and store it in the ```/usr/src/app``` directory in our new container.
+- 
+- ```WORKDIR /usr/src/app```: This sets up where we will run commands within the container. (A bit like ```cd``` on the terminal)
+
+- ```RUN pip install -r requirements.txt```: In this line, assuming you’ve included all of your requirements to a file called ```requirements.txt```, they will all be installed within the container.
+ 
+- ```CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]```: Finally, we specify the command that should be run when we start up the container.
+
+So far in this class, we’ve only been using **SQLite as that’s the default database management system for Django**. In live applications with real users though, SQLite is almost never used, as it is not as easily scaled as other systems. Thankfully, if we wish to run a separate server for our database, we can simply add another Docker container, and run them together using a feature called **Docker Compose**. This will allow two different servers to run in separate containers, but also be able to communicate with one another. To specify this, we’ll use a YAML file called ```docker-compose.yml```:
+
+```bash
+version: '3'
+
+services:
+    db:
+        image: postgres
+
+    web:
+        build: .
+        volumes:
+            - .:/usr/src/app
+        ports:
+            - "8000:8000"
+```
+
+In the above file we:
+
+- Specify that we’re using version 3 of Docker Compose
+- Outline two services:
+  - db sets up our database container based on an image already written by Postgres.
+  - web sets up our server’s container by instructing Docker to:
+  - Use the Dockerfile within the current directory.
+  - Use the specified path within the container.
+  - Link port 8000 within the container to port 8000 on our computer.
+
+Now, we’re ready to start up our services with the command ```docker-compose up```. This will launch both of our servers inside of new Docker containers.
+
+At this point, we may want to run commands within our Docker container to add database entries or run tests. To do this, we’ll first run ```docker ps``` to show all of the docker containers that are running. Then, well find the ```CONTAINER ID``` of the container we wish to enter and run ```docker exec -it CONTAINER_ID bash -l```. This will move you inside the ```usr/src/app``` directory we set up within our container. We can run any commands we wish inside that container and then exit by running ```CTRL-D```.
+
+That’s all for this lecture! Next time, we’ll working on scaling up our projects and making sure they are secure.
+
+```bash
+# install docker
+$ sudo wget –O /usr/local/bin/docker-compose compose/releases/download/1.29.2/docker-compose-Linux-x86_64https://github.com/docker/
+
+$ sudo chmod +x /usr/local/bin/docker-compose
+
+$ docker-compose --version
+$ docker-compose up
+```
 
 ### Useful Resources
+
+- [GitHub Actions](https://github.com/features/actions)
+
+- [GitHub Actions: Basics](https://medium.com/intelligentmachines/github-actions-basics-40a4d9b417f8)
+
+- [Get Started With CI/CD Using GitHub Actions](https://medium.com/swlh/get-started-with-ci-cd-using-github-actions-ca32d34b2943)
