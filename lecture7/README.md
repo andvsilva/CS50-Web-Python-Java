@@ -763,12 +763,25 @@ That’s all for this lecture! Next time, we’ll working on scaling up our proj
 
 ```bash
 # install docker
-$ sudo wget –O /usr/local/bin/docker-compose compose/releases/download/1.29.2/docker-compose-Linux-x86_64https://github.com/docker/
+# https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-20-04
 
-$ sudo chmod +x /usr/local/bin/docker-compose
+$ pip3 install docker-compose
 
-$ docker-compose --version
-$ docker-compose up
+$ sudo chmod 666 /var/run/docker.sock
+$ cd lecture7/
+$ sudo service docker start
+
+$ sudo docker-compose up -d              
+Starting airline1_db_1  ... done
+Starting airline1_web_1 ... done
+
+$ docker ps
+
+... CONTAINER ID
+
+$ docker exec -it CONTAINER ID bash -l
+root@dff6293e5f2b:/usr/src/app# python manage.py createsuperuser
+
 ```
 
 ### Useful Resources
@@ -778,3 +791,7 @@ $ docker-compose up
 - [GitHub Actions: Basics](https://medium.com/intelligentmachines/github-actions-basics-40a4d9b417f8)
 
 - [Get Started With CI/CD Using GitHub Actions](https://medium.com/swlh/get-started-with-ci-cd-using-github-actions-ca32d34b2943)
+
+- [Docker — Beginner’s Guide — Part 1: Images & Containers](https://medium.com/codingthesmartway-com-blog/docker-beginners-guide-part-1-images-containers-6f3507fffc98)
+
+- [Hands-on with Docker- A step by step tutorial to getting started with Docker on any machine](https://pallawi-ds.medium.com/hands-on-with-docker-a-step-by-step-tutorial-to-getting-started-with-docker-on-any-machine-55ec923a2b02)
