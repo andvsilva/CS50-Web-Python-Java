@@ -1,16 +1,17 @@
 # [Lecture 7 - Testing, CI/CD](https://cs50.harvard.edu/web/2020/weeks/7/)
-
-- [Introduction]()
-- [Testing]()
-- [Assert]()
-- [Test-Driven Development]()
-- [Unit Testing]()
-- [Django Testing]()
-- [Client Testing]()
-- [Selenium]()
-- [CI/CD]()
-- [GitHub Actions]()
-- [Docker]()
+- [Lecture 7 - Testing, CI/CD](#lecture-7---testing-cicd)
+  - [Introduction](#introduction)
+  - [Testing](#testing)
+  - [Assert](#assert)
+  - [Test-Driven Development](#test-driven-development)
+  - [Unit Testing](#unit-testing)
+  - [Django Testing](#django-testing)
+  - [Client Testing](#client-testing)
+  - [Selenium](#selenium)
+  - [CI/CD](#cicd)
+  - [GitHub Actions](#github-actions)
+  - [Docker](#docker)
+  - [Useful Resources](#useful-resources)
 
 ## Introduction
 
@@ -704,7 +705,7 @@ Now, after fixing the bug, we could bush again and find a better outcome: [GitHu
 
 ## Docker
 
-Problems can arise in the world of software development when the configuration on your computer is different than the one your application is being run on. You may have a different version of Python or some additional packages installed that allow the application to run smoothly on your computer, while it would crash on your server. To avoid these problems, we need a way to make sure everyone working on a project is using the same environment. One way to do this is to use a tool called ***Docker**, which is a containerization software, meaning it creates an isolated environment within your computer that can be standardized among many collaborators and the server on which your site is run. While Docker is a bit like a **Virtual Machine**, they are in fact different technologies. A virtual machine (like the one used on GitHub Actions or when you launch an [AWS](https://aws.amazon.com/) server) is effectively an entire virtual computer with its own operating system, meaning it ends up taking a lot of space wherever it is running. Dockers, on the other hand, work by setting up a container within an existing computer, therefore taking up less space.
+Problems can arise in the world of software development when the configuration on your computer is different than the one your application is being run on. You may have a different version of Python or some additional packages installed that allow the application to run smoothly on your computer, while it would crash on your server. To avoid these problems, we need a way to make sure everyone working on a project is using the same environment. One way to do this is to use a tool called **Docker**, which is a containerization software, meaning it creates an isolated environment within your computer that can be standardized among many collaborators and the server on which your site is run. While Docker is a bit like a **Virtual Machine**, they are in fact different technologies. A virtual machine (like the one used on GitHub Actions or when you launch an [AWS](https://aws.amazon.com/) server) is effectively an entire virtual computer with its own operating system, meaning it ends up taking a lot of space wherever it is running. Dockers, on the other hand, work by setting up a container within an existing computer, therefore taking up less space.
 
 Now that we have an idea of what a Docker container is, let’s take a look at how we can configure one on our computers. Our first step in doing this will be to create a **Docker File** which we’ll name ```Dockerfile```. Inside this file, we’ll provide instructions for how to create a **Docker Image** which describes the libraries and binaries we wish to include in our container. Here’s an example of what our ```Dockerfile``` might look like:
 
@@ -781,10 +782,9 @@ $ docker ps
 
 $ docker exec -it CONTAINER ID bash -l
 root@dff6293e5f2b:/usr/src/app# python manage.py createsuperuser
-
 ```
 
-### Useful Resources
+## Useful Resources
 
 - [GitHub Actions](https://github.com/features/actions)
 

@@ -11,8 +11,8 @@ In this course, we are picking up where CS50 left off and diving into the design
 - [SQL, Models, and Migrations](https://cs50.harvard.edu/web/2020/weeks/4/)
 - [JavaScript](https://cs50.harvard.edu/web/2020/weeks/5/)
 - [User Interfaces](https://cs50.harvard.edu/web/2020/weeks/6/)
--[Testing, CI/CD](https://cs50.harvard.edu/web/2020/weeks/7/)
-- Scalability and Security
+- [Testing, CI/CD](https://cs50.harvard.edu/web/2020/weeks/7/)
+- [Scalability and Security](https://cs50.harvard.edu/web/2020/weeks/8/)
 
 In this course the topics will be described in more detail in each folder lecture. Below you can see a brief overview of contents:
 
@@ -31,3 +31,5 @@ In this course the topics will be described in more detail in each folder lectur
 - [Lecture 6](lecture6/): methods used to make a website as easy to use as possible
 
 - [Lecture 7](lecture7/): learning about different methods used to make sure updates to web pages proceed smoothly
+
+- [Lecture 8](lecture8/): making sure our websites can be accessed by many users at once, and that they are safe from malicious intent
