@@ -1,6 +1,6 @@
 ### Digital Innovation One - DIO
 
-![](certification/certication_python_andvsilva.png)
+![](certification/certification_python_andvsilva.png)
 
 
 # [CS50 Web Programming with Python and JavaScript](https://cs50.harvard.edu/web/2020/)
