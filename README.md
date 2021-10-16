@@ -1,3 +1,8 @@
+### Digital Innovation One - DIO
+
+![](certification/certication_python_andvsilva.png)
+
+
 # [CS50 Web Programming with Python and JavaScript](https://cs50.harvard.edu/web/2020/)
 
 In this course, we are picking up where CS50 left off and diving into the design and creation of web applications. We will build our web-design skills by working on a number of projects throughout the course, including an open-ended final project where you will have the chance to create a website of your own!
