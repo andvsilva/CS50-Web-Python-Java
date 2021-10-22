@@ -107,6 +107,39 @@ status code   Description
     500       Internal Server Error
 ```
 
+### Django - course DIO
+
+```bash
+Python, Django with SQL
+
+### A good practice is to create an environment
+### for each project.
+
+$ sudo apt install python3-venv
+$ python3 -m venv my-project-env
+$ source my-project-env/bin/activate
+$ pip install requests
+
+# install django
+pip install django
+
+$ django-admin startproject app
+
+$ python manage.py runserver                                                              604ms 
+Watching for file changes with StatReloader
+Performing system checks...
+
+System check identified no issues (0 silenced).
+
+You have 18 unapplied migration(s). Your project may not work properly until you apply the migrations for app(s): admin, auth, contenttypes, sessions.
+Run 'python manage.py migrate' to apply them.
+October 22, 2021 - 00:32:37
+Django version 3.2.8, using settings 'app.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CONTROL-C.
+
+```
+
 ## Useful references:
 
 - [How to Create a Simple Django Web App With Python](https://medium.com/better-programming/how-to-create-a-simple-django-web-app-with-python-7ba75b4e34a6)
