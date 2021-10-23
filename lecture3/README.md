@@ -138,6 +138,50 @@ Django version 3.2.8, using settings 'app.settings'
 Starting development server at http://127.0.0.1:8000/
 Quit the server with CONTROL-C.
 
+
+
+# Project Agenda
+
+~/repo/CS50-Web-Python-Java/lecture3 on  master ⌚ 11:21:54
+
+$ django-admin startproject agenda  
+
+~/repo/CS50-Web-Python-Java/lecture3/agenda on  master! ⌚ 11:22:24
+$ django-admin startapp core
+
+~/repo/CS50-Web-Python-Java/lecture3/agenda on  master! ⌚ 11:30:45
+$ python manage.py createsuperuser --username admin
+Email address: admin@agenda.com.br
+Password: 
+Password (again): 
+The password is too similar to the email address.
+This password is too short. It must contain at least 8 characters.
+Bypass password validation and create user anyway? [y/N]: y
+Superuser created successfully.
+
+### file core/models.py
+### Add the lines below
+
+class Evento(models.Model):
+    titulo = models.CharField(max_length=100)
+    description = models.TextField(blank=True, null=True)
+    data_evento = models.DateTimeField()
+    data_criacao = models.DateTimeField(auto_now=True)
+
+~/repo/CS50-Web-Python-Java/lecture3/agenda on  master! ⌚ 17:13:02
+$ python manage.py makemigrations core 
+Migrations for 'core':
+  core/migrations/0001_initial.py
+
+$ python manage.py sqlmigrate core 0001
+BEGIN;
+--
+-- Create model Evento
+--
+CREATE TABLE "core_evento" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "titulo" varchar(100) NOT NULL, "description" text NULL, "data_evento" datetime NOT NULL, "data_criacao" datetime NOT NULL);
+COMMIT;
+
+
 ```
 
 ## Useful references:
