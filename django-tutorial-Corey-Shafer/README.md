@@ -188,6 +188,40 @@ $ python manage.py migrate
 
 ![](figures/django_admin.png)
 
+
+## Applications and Routes
+
+```bash
+$ python manage.py startapp blog
+
+$ tree                                                                                                 3ms 
+.
+├── blog
+│   ├── admin.py
+│   ├── apps.py
+│   ├── __init__.py
+│   ├── migrations
+│   │   └── __init__.py
+│   ├── models.py
+│   ├── tests.py
+│   └── views.py
+├── db.sqlite3
+├── django_project
+│   ├── asgi.py
+│   ├── __init__.py
+│   ├── __pycache__
+│   │   ├── __init__.cpython-38.pyc
+│   │   ├── settings.cpython-38.pyc
+│   │   ├── urls.cpython-38.pyc
+│   │   └── wsgi.cpython-38.pyc
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
+└── manage.py
+
+4 directories, 18 files
+```
+
 ## Resources
 
 - [Django Basics for a Beginner](https://medium.com/@humble_bee/django-basics-for-a-beginner-5d864e6aa084)
