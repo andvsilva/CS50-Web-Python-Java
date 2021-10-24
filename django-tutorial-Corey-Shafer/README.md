@@ -192,18 +192,37 @@ $ python manage.py migrate
 ## Applications and Routes
 
 ```bash
+# Terminal
 $ python manage.py startapp blog
 
-$ tree                                                                                                 3ms 
+$ tree
 .
 ├── blog
 │   ├── admin.py
 │   ├── apps.py
 │   ├── __init__.py
 │   ├── migrations
-│   │   └── __init__.py
+│   │   ├── __init__.py
+│   │   └── __pycache__
+│   │       └── __init__.cpython-38.pyc
 │   ├── models.py
+│   ├── __pycache__
+│   │   ├── admin.cpython-38.pyc
+│   │   ├── apps.cpython-38.pyc
+│   │   ├── __init__.cpython-38.pyc
+│   │   ├── models.cpython-38.pyc
+│   │   ├── urls.cpython-38.pyc
+│   │   └── views.cpython-38.pyc
+│   ├── static
+│   │   └── blog
+│   │       └── main.css
+│   ├── templates
+│   │   └── blog
+│   │       ├── about.html
+│   │       ├── base.html
+│   │       └── home.html
 │   ├── tests.py
+│   ├── urls.py
 │   └── views.py
 ├── db.sqlite3
 ├── django_project
@@ -219,9 +238,62 @@ $ tree                                                                          
 │   └── wsgi.py
 └── manage.py
 
-4 directories, 18 files
+10 directories, 30 files
+
+
+In the folder:
+── templates
+│   │   └── blog
+│   │       ├── about.html
+│   │       ├── base.html
+│   │       └── home.html
+
+# see the 3 files -> pages
+
+# style for the page:
+static
+│   │   └── blog
+│   │       └── main.css
+
+## open in the browser:
+## http://127.0.0.1:8000/blog/
+```
+
+![](figures/blog_page.png)
+
+```bash
+### Add the code below to the file home.html
+
+<article class="media content-section">
+  <div class="media-body">
+    <div class="article-metadata">
+      <a class="mr-2" href="#">{{ post.author }}</a>
+      <small class="text-muted">{{ post.date_posted }}</small>
+    </div>
+      <h2><a class="article-title" href="#">{{ post.title }}</a></h2>
+      <p class="article-content">{{ post.content }}</p>
+  </div>
+</article>
+
+### file home.html
+{% extends "blog/base.html" %}
+{% block content%}
+    {%for post in posts %}
+        <article class="media content-section">
+            <div class="media-body">
+            <div class="article-metadata">
+                <a class="mr-2" href="#">{{ post.author }}</a>
+                <small class="text-muted">{{ post.date_posted }}</small>
+            </div>
+                <h2><a class="article-title" href="#">{{ post.title }}</a></h2>
+                <p class="article-content">{{ post.content }}</p>
+            </div>
+        </article>
+    {% endfor %}
+{% endblock content %}
 ```
 
 ## Resources
 
 - [Django Basics for a Beginner](https://medium.com/@humble_bee/django-basics-for-a-beginner-5d864e6aa084)
+- [Build fast, responsive sites with Bootstrap](https://getbootstrap.com/)
