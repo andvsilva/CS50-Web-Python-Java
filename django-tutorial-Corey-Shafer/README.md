@@ -20,7 +20,7 @@ $ source app-project/bin/activate
 ## Install packages:
 
 ## freeze-requirements
-$ pip install freeze-requirements                                                                                 6ms 
+$ pip install freeze-requirements
 Collecting freeze-requirements
   Using cached freeze_requirements-0.5.3-py3-none-any.whl
 Collecting click
@@ -34,7 +34,8 @@ Installing collected packages: six, sh, click, freeze-requirements
 Successfully installed click-8.0.3 freeze-requirements-0.5.3 sh-1.14.2 six-1.16.0
 
 ## python - Upgrade - pip
-$ python3 -m pip install --upgrade pip                                                                                                5996ms 
+$ python3 -m pip install --upgrade pip
+
 Requirement already satisfied: pip in ./app-project/lib/python3.8/site-packages (21.1.1)
 Collecting pip
   Downloading pip-21.3.1-py3-none-any.whl (1.7 MB)
@@ -292,6 +293,26 @@ static
     {% endfor %}
 {% endblock content %}
 ```
+
+```bash
+$ python manage.py makemigrations                                  
+No changes detected
+
+$ python manage.py migrate
+Operations to perform:
+  Apply all migrations: admin, auth, contenttypes, sessions
+Running migrations:
+  No migrations to apply.
+
+$ python manage.py createsuperuser 
+Username (leave blank to use 'andsilva'): andvsilva
+Email address: andsilvadrcc@gmail.com
+Password: 
+Password (again): 
+Superuser created successfully.
+```
+
+![](gifs/login_username.gif)
 
 ## Resources
 
