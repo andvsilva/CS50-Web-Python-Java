@@ -531,6 +531,10 @@ http://127.0.0.1:8000/register/
 ![](gifs/register_user.gif)
 
 
+```bash
+#  Web App Part 7 - Login and Logout System
+```
+
 ## Resources
 
 - [Django Basics for a Beginner](https://medium.com/@humble_bee/django-basics-for-a-beginner-5d864e6aa084)
