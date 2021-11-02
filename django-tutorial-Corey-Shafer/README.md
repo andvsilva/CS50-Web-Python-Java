@@ -517,7 +517,20 @@ admin.site.register(Post)
 
 And the posts...
 
-![](gifs/Posts.gif)
+![](gifs/posts.gif)
+
+## Users App
+
+```bash
+$ python manage.py startapp users
+
+# Browser:
+http://127.0.0.1:8000/register/
+```
+
+![](gifs/register_user.gif)
+
+
 ## Resources
 
 - [Django Basics for a Beginner](https://medium.com/@humble_bee/django-basics-for-a-beginner-5d864e6aa084)
