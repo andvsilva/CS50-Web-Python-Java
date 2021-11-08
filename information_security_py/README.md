@@ -2,7 +2,6 @@
 
 ## Python security
 
-
 What is information security simple definition?
 
 Information security refers to the processes and methodologies
