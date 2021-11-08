@@ -89,3 +89,49 @@ Client-Server
 ```
 
 ![](gifs/Client_server_socket.gif)
+
+```bash
+# generator_hashes
+$ python generator_hashes.py                                              4ms 
+Type the string to generate the hash: andvsilva
+#### MENU Choose one type of hash ### 
+             1) MD5 
+             2) SHA1
+             3) SHA256
+             4) SHA512
+             Type the number of the hash to be generated: 1
+(base) 
+~/repo/CS50-Web-Python-Java/information_security_py/hash on  master! ⌚ 23:02:20
+$ python generator_hashes.py                                                                                                                        9995ms 
+Type the string to generate the hash: andvsilva
+#### MENU Choose one type of hash ### 
+             1) MD5 
+             2) SHA1
+             3) SHA256
+             4) SHA512
+             Type the number of the hash to be generated: 2
+The hash SHA1 of the string is:  0d7044371abc9619a144606546c6c51c2df7dd72
+(base) 
+~/repo/CS50-Web-Python-Java/information_security_py/hash on  master! ⌚ 23:02:33
+$ python generator_hashes.py                                                                                                                        6064ms 
+Type the string to generate the hash: andvsilva
+#### MENU Choose one type of hash ### 
+             1) MD5 
+             2) SHA1
+             3) SHA256
+             4) SHA512
+             Type the number of the hash to be generated: 3
+The hash SHA256 of the string is:  b87ba9d57d6ea058ad020967abfd28500c57edf907ef46fb39ed4d993555eea6
+(base) 
+~/repo/CS50-Web-Python-Java/information_security_py/hash on  master! ⌚ 23:02:43
+$ python generator_hashes.py                                                                                                                        8277ms 
+Type the string to generate the hash: andvsilva
+#### MENU Choose one type of hash ### 
+             1) MD5 
+             2) SHA1
+             3) SHA256
+             4) SHA512
+             Type the number of the hash to be generated: 4
+The hash SHA512 of the string is:  666d26380225383c108d895b6bf435a86e0da3ff46e8bccc903b3da0304ebf7efb57656d75e294e516f7755a87fddd4235de2d4fa98ffcc5071f4125a4faf461
+
+```
