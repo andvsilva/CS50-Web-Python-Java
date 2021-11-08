@@ -532,7 +532,40 @@ http://127.0.0.1:8000/register/
 
 
 ```bash
-#  Web App Part 7 - Login and Logout System
+#  Web App Part 7 - Login and Logout System - done by @andvsilva
+
+#  Web App Part 8 - User Profile and Picture
+
+## Add the source code below to file users/models.py
+# -------------------------------------------------------------------------------------
+from django.db import models
+from django.contrib.auth.models import User
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    image = models.ImageField(default='default.jpg', upload_to='profile_pics')
+    
+    def __str__(self):
+        return f'{self.user.username} Profile'
+# -------------------------------------------------------------------------------------
+
+$ python manage.py makemigrations
+Migrations for 'users':
+  users/migrations/0001_initial.py
+    - Create model Profile
+
+$ python manage.py migrate
+Operations to perform:
+  Apply all migrations: admin, auth, blog, contenttypes, sessions, users
+Running migrations:
+  Applying users.0001_initial... OK
+(base)
+
+# And Add the source code below to file users/admin.py
+from .models import Profile
+
+admin.site.register(Profile)
+
 ```
 
 ## Resources
