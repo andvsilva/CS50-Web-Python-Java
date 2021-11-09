@@ -135,3 +135,172 @@ Type the string to generate the hash: andvsilva
 The hash SHA512 of the string is:  666d26380225383c108d895b6bf435a86e0da3ff46e8bccc903b3da0304ebf7efb57656d75e294e516f7755a87fddd4235de2d4fa98ffcc5071f4125a4faf461
 
 ```
+
+### Wordlists
+
+```bash
+# Generator of wordlists
+
+$ python generator_wordlists.py
+String to be permutated: abc
+# 1 -> abc
+# 2 -> acb
+# 3 -> bac
+# 4 -> bca
+# 5 -> cab
+# 6 -> cba
+```
+
+### Web Crawler
+
+WebCrawler is a search engine, and is the oldest surviving search engine on the web today. For many years, it operated as a metasearch engine. WebCrawler was the first web search engine to provide full text search.
+
+```bash
+### In this script, I am using the library snoop for debug (very good!!)
+$ python webscrawler.py
+21:18:39.75 >>> Call to start in File "webscrawler.py", line 16
+21:18:39.75 ...... url = 'https://scikit-learn.org/stable/'
+21:18:39.75   16 | def start(url):
+21:18:39.75   18 |     wordlist = [] # to store the content of the site
+21:18:39.75 .......... wordlist = []
+21:18:39.75   19 |     source_code = requests.get(url).text # get text from site
+21:18:44.89 .......... source_code = '\n\n<!DOCTYPE html>\n<!--[if IE 8]><html class="no-....org/versionwarning.js"></script>\n</body>\n</html>'
+21:18:44.89 .......... len(source_code) = 26011
+21:18:44.89   21 |     soup = BeautifulSoup(source_code, 'html.parser')
+21:18:44.95 .......... soup = 
+21:18:44.95                   <!DOCTYPE html>
+21:18:44.95                   
+21:18:44.95                   <!--[if IE 8]><html class="no-....org/versionwarning.js"></script>
+21:18:44.95                   </body>
+21:18:44.95                   </html>
+21:18:44.95 .......... soup.shape = None
+21:18:44.95 .......... soup.dtype = None
+21:18:44.95   25 |     for each_text in soup.findAll('h4', {'class': 'sk-card-title card-title'}):
+21:18:44.97 .......... each_text = <h4 class="sk-card-title card-title">Classification</h4>
+21:18:44.97 .......... each_text.shape = None
+21:18:44.97 .......... each_text.dtype = None
+21:18:44.97   26 |         content = each_text.text
+21:18:44.97 .............. content = 'Classification'
+21:18:44.97   28 |         words = content.lower().split()
+21:18:44.98 .............. words = ['classification']
+21:18:44.98 .............. len(words) = 1
+21:18:44.98   31 |         for each_word in words:
+21:18:44.99 .............. each_word = 'classification'
+21:18:44.99   32 |             wordlist.append(each_word)
+21:18:45.00 .................. wordlist = ['classification']
+21:18:45.00 .................. len(wordlist) = 1
+21:18:45.00   31 |         for each_word in words:
+21:18:45.01   33 |         clean_wordlist(wordlist)
+classification : 1 
+[('classification', 1)]
+21:18:45.02   25 |     for each_text in soup.findAll('h4', {'class': 'sk-card-title card-title'}):
+21:18:45.03 .......... each_text = <h4 class="sk-card-title card-title">Regression</h4>
+21:18:45.03   26 |         content = each_text.text
+21:18:45.04 .............. content = 'Regression'
+21:18:45.04   28 |         words = content.lower().split()
+21:18:45.05 .............. words = ['regression']
+21:18:45.05   31 |         for each_word in words:
+21:18:45.06 .............. each_word = 'regression'
+21:18:45.06   32 |             wordlist.append(each_word)
+21:18:45.07 .................. wordlist = ['classification', 'regression']
+21:18:45.07 .................. len(wordlist) = 2
+21:18:45.07   31 |         for each_word in words:
+21:18:45.08   33 |         clean_wordlist(wordlist)
+classification : 1 
+regression : 1 
+[('classification', 1), ('regression', 1)]
+21:18:45.09   25 |     for each_text in soup.findAll('h4', {'class': 'sk-card-title card-title'}):
+21:18:45.10 .......... each_text = <h4 class="sk-card-title card-title">Clustering</h4>
+21:18:45.10   26 |         content = each_text.text
+21:18:45.11 .............. content = 'Clustering'
+21:18:45.11   28 |         words = content.lower().split()
+21:18:45.12 .............. words = ['clustering']
+21:18:45.12   31 |         for each_word in words:
+21:18:45.13 .............. each_word = 'clustering'
+21:18:45.13   32 |             wordlist.append(each_word)
+21:18:45.14 .................. wordlist = ['classification', 'regression', 'clustering']
+21:18:45.14 .................. len(wordlist) = 3
+21:18:45.14   31 |         for each_word in words:
+21:18:45.15   33 |         clean_wordlist(wordlist)
+classification : 1 
+regression : 1 
+clustering : 1 
+[('classification', 1), ('regression', 1), ('clustering', 1)]
+21:18:45.16   25 |     for each_text in soup.findAll('h4', {'class': 'sk-card-title card-title'}):
+21:18:45.17 .......... each_text = <h4 class="sk-card-title card-title">Dimensionality reduction</h4>
+21:18:45.17   26 |         content = each_text.text
+21:18:45.18 .............. content = 'Dimensionality reduction'
+21:18:45.18   28 |         words = content.lower().split()
+21:18:45.19 .............. words = ['dimensionality', 'reduction']
+21:18:45.19 .............. len(words) = 2
+21:18:45.19   31 |         for each_word in words:
+21:18:45.20 .............. each_word = 'dimensionality'
+21:18:45.20   32 |             wordlist.append(each_word)
+21:18:45.22 .................. wordlist = ['classification', 'regression', 'clustering', 'dimensionality']
+21:18:45.22 .................. len(wordlist) = 4
+21:18:45.22   31 |         for each_word in words:
+21:18:45.23 .............. each_word = 'reduction'
+21:18:45.23   32 |             wordlist.append(each_word)
+21:18:45.24 .................. wordlist = ['classification', 'regression', 'clustering', 'dimensionality', 'reduction']
+21:18:45.24 .................. len(wordlist) = 5
+21:18:45.24   31 |         for each_word in words:
+21:18:45.24   33 |         clean_wordlist(wordlist)
+classification : 1 
+regression : 1 
+clustering : 1 
+dimensionality : 1 
+reduction : 1 
+[('classification', 1), ('regression', 1), ('clustering', 1), ('dimensionality', 1), ('reduction', 1)]
+21:18:45.26   25 |     for each_text in soup.findAll('h4', {'class': 'sk-card-title card-title'}):
+21:18:45.26 .......... each_text = <h4 class="sk-card-title card-title">Model selection</h4>
+21:18:45.26   26 |         content = each_text.text
+21:18:45.28 .............. content = 'Model selection'
+21:18:45.28   28 |         words = content.lower().split()
+21:18:45.28 .............. words = ['model', 'selection']
+21:18:45.28   31 |         for each_word in words:
+21:18:45.29 .............. each_word = 'model'
+21:18:45.29   32 |             wordlist.append(each_word)
+21:18:45.30 .................. wordlist = ['classification', 'regression', 'clustering', 'dimensionality', 'reduction', 'model']
+21:18:45.30 .................. len(wordlist) = 6
+21:18:45.30   31 |         for each_word in words:
+21:18:45.31 .............. each_word = 'selection'
+21:18:45.31   32 |             wordlist.append(each_word)
+21:18:45.32 .................. wordlist = ['classification', 'regression', 'clustering', 'dimensionality', 'reduction', 'model', 'selection']
+21:18:45.32 .................. len(wordlist) = 7
+21:18:45.32   31 |         for each_word in words:
+21:18:45.33   33 |         clean_wordlist(wordlist)
+classification : 1 
+regression : 1 
+clustering : 1 
+dimensionality : 1 
+reduction : 1 
+model : 1 
+selection : 1 
+[('classification', 1), ('regression', 1), ('clustering', 1), ('dimensionality', 1), ('reduction', 1), ('model', 1), ('selection', 1)]
+21:18:45.34   25 |     for each_text in soup.findAll('h4', {'class': 'sk-card-title card-title'}):
+21:18:45.35 .......... each_text = <h4 class="sk-card-title card-title">Preprocessing</h4>
+21:18:45.35   26 |         content = each_text.text
+21:18:45.36 .............. content = 'Preprocessing'
+21:18:45.36   28 |         words = content.lower().split()
+21:18:45.37 .............. words = ['preprocessing']
+21:18:45.37 .............. len(words) = 1
+21:18:45.37   31 |         for each_word in words:
+21:18:45.38 .............. each_word = 'preprocessing'
+21:18:45.38   32 |             wordlist.append(each_word)
+21:18:45.39 .................. wordlist = ['classification', 'regression', 'clustering', 'dimensionality', ..., 'model', 'selection', 'preprocessing']
+21:18:45.39 .................. len(wordlist) = 8
+21:18:45.39   31 |         for each_word in words:
+21:18:45.40   33 |         clean_wordlist(wordlist)
+classification : 1 
+regression : 1 
+clustering : 1 
+dimensionality : 1 
+reduction : 1 
+model : 1 
+selection : 1 
+preprocessing : 1 
+[('classification', 1), ('regression', 1), ('clustering', 1), ('dimensionality', 1), ('reduction', 1), ('model', 1), ('selection', 1), ('preprocessing', 1)]
+21:18:45.41   25 |     for each_text in soup.findAll('h4', {'class': 'sk-card-title card-title'}):
+21:18:45.42 <<< Return value from start: None
+(base) 
+```
